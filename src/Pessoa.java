@@ -1,3 +1,5 @@
+package projeto_POO.src;
+
 // classe Pessoa e seus atributos
 public class Pessoa {
     private String nome;

@@ -1,3 +1,5 @@
+package projeto_POO.src;
+
 public class Passageiro extends Pessoa {
     private int idPassageiro;
     private String cartaoDados;
