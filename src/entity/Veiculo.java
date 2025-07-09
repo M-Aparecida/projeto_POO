@@ -1,4 +1,4 @@
-package projeto_POO.src;
+package entity;
 
 public class Veiculo extends Pessoa {
  private String placa;

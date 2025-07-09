@@ -1,4 +1,4 @@
-package projeto_POO.src;
+package entity;
 
 // classe Pessoa e seus atributos
 public class Pessoa {

@@ -1,4 +1,4 @@
-package projeto_POO.src;
+package entity;
 
 public class Motorista extends Pessoa {
     private int numeroCnh;
