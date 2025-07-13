@@ -29,7 +29,7 @@ public List<Motorista> listarMotoristas() {
                 rs.getString("telefone"), 
                 rs.getString("senha"), 
                 rs.getString("genero"),      
-                rs.getInt("idade"),   
+                rs.getInt("idade"),
                 rs.getInt("numero_cnh"), 
                 rs.getBoolean("disponivel"), 
                 rs.getInt("qtd_corridas"), 
