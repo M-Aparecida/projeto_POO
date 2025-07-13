@@ -1,51 +1,52 @@
 package entity;
 
 // classe Pessoa e seus atributos
-public class Pessoa {
+public abstract class Pessoa {
     private String nome;
     private String cpf;
     private String email;
     private String telefone;
     private String senha;
+    private int idade;
     private String genero;
     private int quantidadeCorridas;
     private float avaliacaoMedia;
 
+    public Pessoa(){
+        this.quantidadeCorridas = 0;
+        this.avaliacaoMedia = 0.0f;
+    }
+
     // inicializa os atributos da classe
-    public Pessoa(String nome, String cpf, String email, String telefone, String senha, String genero) {
+    public Pessoa(String nome, String cpf, String email, String telefone, int idade, String senha, String genero) {
         this.nome = nome;
         this.cpf = cpf;
         this.email = email;
         this.telefone = telefone;
         this.senha = senha;
+         this.idade = idade;
         this.genero = genero;
         this.quantidadeCorridas = 0;
         this.avaliacaoMedia = 0.0f;
     }
 
-    // exibe os dados cadastrados
-    public void exibirCadastro() {
-        System.out.println("Nome: " + nome);
-        System.out.println("CPF: " + cpf);
-        System.out.println("Email: " + email);
-        System.out.println("Telefone: " + telefone);
-        System.out.println("Gênero: " + genero);
-        System.out.println("Quantidade de Corridas: " + quantidadeCorridas);
-        System.out.println("Avaliação Média: " + avaliacaoMedia);
-    }
-
     //valida email e senha
-    public boolean loginEmailSenha(String emailInformado, String senhaInformada) {
-        return this.email.equals(emailInformado) && this.senha.equals(senhaInformada);
+    public boolean login(String email, String senha) {
+        return this.email.equals(email) && this.senha.equals(senha);
     }
 
-    // redefine a senha se o email for correspondente
-    public boolean redefinirSenha(String emailInformado, String novaSenha) {
-        if (this.email.equals(emailInformado)) {
-            this.senha = novaSenha;
-            return true;
+    // recupera senha
+    public void recuperarSenha(String email) {
+        if (this.email.equals(email)) {
+            System.out.println("Email confirmado. Prossiga com a redefinição da senha.");
+        } else {
+            System.out.println("Email não encontrado.");
         }
-        return false;
+    }
+
+    //exclui cadastro
+    public boolean excluirCadastro(String cpf, String senha) {
+        return this.cpf.equals(cpf) && this.senha.equals(senha);
     }
 
     // Getters e Setters para permitir acesso controlado aos atributos por outras classes
@@ -89,6 +90,12 @@ public class Pessoa {
         this.senha = senha;
     }
 
+    public int getIdade() {
+        return idade; }
+
+    public void setIdade(int idade) {
+        this.idade = idade; }
+    
     public String getGenero() {
         return genero;
     }
