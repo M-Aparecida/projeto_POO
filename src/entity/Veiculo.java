@@ -4,7 +4,7 @@ public class Veiculo extends Pessoa {
  private String placa;
     private String modelo;
     private int ano;
-    private boolean emUso;
+    private boolean estaEmUso;
 
     public Veiculo(String placa,String modelo,int ano) {
         if (placa == null || modelo == null || ano <= 0) {
