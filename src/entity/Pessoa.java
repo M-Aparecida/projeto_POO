@@ -62,7 +62,10 @@ public abstract class Pessoa {
         return cpf;
     }
 
-    public void setCpf(String cpf) {
+    public void setCpf(String cpf) throws IllegalArgumentException {
+        if (!cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}")) {
+            throw new IllegalArgumentException();
+        }
         this.cpf = cpf;
     }
 
@@ -70,7 +73,10 @@ public abstract class Pessoa {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(String email) throws IllegalArgumentException{
+        if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+            throw new IllegalArgumentException();
+        }
         this.email = email;
     }
 
@@ -78,7 +84,10 @@ public abstract class Pessoa {
         return telefone;
     }
 
-    public void setTelefone(String telefone) {
+    public void setTelefone(String telefone) throws IllegalArgumentException {
+        if (!telefone.matches("\\(\\d{2}\\) \\d{5}\\-\\d{4}")) {
+            throw new IllegalArgumentException();
+        }
         this.telefone = telefone;
     }
 
@@ -93,8 +102,12 @@ public abstract class Pessoa {
     public int getIdade() {
         return idade; }
 
-    public void setIdade(int idade) {
-        this.idade = idade; }
+    public void setIdade(int idade) throws IllegalArgumentException {
+        if (idade < 1 || idade > 120) {
+            throw new IllegalArgumentException();
+        }
+        this.idade = idade; 
+    }
     
     public String getGenero() {
         return genero;
@@ -119,4 +132,13 @@ public abstract class Pessoa {
     public void setAvaliacaoMedia(float avaliacaoMedia) {
         this.avaliacaoMedia = avaliacaoMedia;
     }
+
+    @Override
+    public String toString() {
+        return "nome=" + nome + ", cpf=" + cpf + ", email=" + email + ", telefone=" + telefone + ", senha="
+                + senha + ", idade=" + idade + ", genero=" + genero + ", quantidadeCorridas=" + quantidadeCorridas
+                + ", avaliacaoMedia=" + avaliacaoMedia;
+    }
+
+    
 }
