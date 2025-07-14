@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import DAO.PassageiroDAO;
 
+
 public class App {
 
     static Scanner scanner = new Scanner(System.in);
@@ -13,7 +14,7 @@ public class App {
     public static void main(String[] args) {
         telaBoasVindas();
         limparTela();
-        
+        Passageiro.listarPassageiros();
     }
 
     public static void telaBoasVindas() {
@@ -45,6 +46,7 @@ public class App {
     public static void menuPassageiroLoginCadastro() {
         while (true) {
             limparTela();
+            Passageiro p = new Passageiro();
             System.out.println("\n=== Menu Passageiro ===");
             System.out.println("1. Fazer Login");
             System.out.println("2. Cadastrar-se");
@@ -54,13 +56,30 @@ public class App {
 
             switch (opcao) {
                 case "1":
-                    menuInicialPassageiro();
+                    limparTela();
+                    System.out.println("=== Login Passageiro ===");
+                    System.out.print("E-mail: ");
+                    String emailLogin = scanner.nextLine();
+                    System.out.print("Senha: ");
+                    String senhaLogin = scanner.nextLine();
+
+                    PassageiroDAO daoLogin = new PassageiroDAO();
+                    Passageiro loginTemp = daoLogin.buscarPorEmail(emailLogin);
+
+                    if (loginTemp != null && loginTemp.login(emailLogin, senhaLogin)) {
+                        menuInicialPassageiro(loginTemp.getDadosPassageiro());
+                    } else {
+                        System.out.println("E-mail ou senha inválidos.");
+                    }
+                    break;
+                    
                 case "2":
                     if (menuCadastroPassageiro()) {
-                        menuInicialPassageiro();
+                        menuInicialPassageiro(p.getDadosPassageiro());
                     }else{
                         menuCadastroPassageiro();
                     }
+                    break;
                 case "0":
                     return;
                 default:
@@ -136,7 +155,7 @@ public class App {
         return p.cadastroPassageiro(p.getNome(), p.getEmail(), p.getCpf(), p.getSenha(), p.getCartaoDados(), p.getIdade(), p.getGenero(), p.getTelefone());
     }
 
-    public static void menuInicialPassageiro() {
+    public static void menuInicialPassageiro(Passageiro p) {
         while (true) {
             limparTela();
             System.out.println("\n=== Tela Inicial do Passageiro ===");
@@ -150,10 +169,9 @@ public class App {
 
             switch (opcao) {
                 case "1":
-                    menuEditarCadastro();
+                    menuEditarCadastroPassageiro(p);
                     break;
                 case "2":
-                    // Procurar corrida - você implementa depois
                     break;
                 case "3":
                     menuHistoricoCorridas();
@@ -169,7 +187,7 @@ public class App {
         }
     }
 
-    public static void menuEditarCadastro() {
+    public static void menuEditarCadastroPassageiro(Passageiro p) {
         while (true) {
             limparTela();
             System.out.println("\n=== Editar Cadastro ===");
@@ -182,6 +200,7 @@ public class App {
             String opcao = scanner.nextLine();
 
             if (opcao.equals("0")) return;
+            // Aqui você só exibiria mensagens tipo:
             System.out.println("Função de edição não implementada ainda.");
         }
     }
@@ -230,7 +249,7 @@ public class App {
                 case "1":
                 case "2":
                     if (menuCadastroMotorista()) {
-                        menuInicialPassageiro();
+                        menuInicialMotorista();
                     }else{
                         menuCadastroMotorista();
                     }                    
@@ -257,7 +276,6 @@ public class App {
 
             switch (opcao) {
                 case "1":
-                    menuEditarCadastro();
                     break;
                 case "2":
                     menuHistoricoCorridas();
