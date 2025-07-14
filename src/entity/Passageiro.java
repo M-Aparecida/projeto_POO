@@ -8,16 +8,20 @@ public class Passageiro extends Pessoa {
     private String cartaoDados;
 
     public Passageiro(String nome, String cpf, String email, String telefone, String senha, String genero,
-            int idPassageiro, String cartaoDados, int quantidadeCorridas, float avaliacaoMedia) {
-        super(nome, cpf, email, telefone, senha, genero);
+            int idPassageiro, String cartaoDados, int quantidadeCorridas, float avaliacaoMedia, int idade) {
+        super(nome, cpf, email, telefone, idade, senha, genero);
         this.idPassageiro = idPassageiro;
         this.cartaoDados = cartaoDados;
         super.setAvaliacaoMedia(avaliacaoMedia);
         super.setQuantidadeCorridas(quantidadeCorridas);
     }
 
-    public Passageiro(String nome, String cpf, String email, String telefone, String senha, String genero){
-        super(nome, cpf, email, telefone, senha, genero);
+    public Passageiro(String nome, String cpf, String email, String telefone, String senha, String genero, int idade){
+        super(nome, cpf, email, telefone,idade, senha, genero);
+        cartaoDados = null;
+    }
+
+    public Passageiro(){
         cartaoDados = null;
     }
 
@@ -38,11 +42,22 @@ public class Passageiro extends Pessoa {
                     passageiro.getNome(),
                     passageiro.getEmail(),
                     passageiro.getTelefone(),
-                    passageiro.getGenero(),
+                    passageiro.getGenero().toUpperCase(),
                     passageiro.getQuantidadeCorridas(),
                     passageiro.getAvaliacaoMedia());
         }
     }
+
+public boolean cadastroPassageiro(String nome, String email, String cpf, String senha, String cartaoDados, int idade, String genero, String telefone){
+        Passageiro p = new Passageiro(nome, cpf, email, telefone, senha, genero, idade);
+
+        PassageiroDAO dao = new PassageiroDAO();
+        if(dao.cadastraPassageiro(p)){
+            return true;
+        }else{
+            return false;
+        }
+}
 
     public int getIdPassageiro() {
         return idPassageiro;
