@@ -1,6 +1,6 @@
 package entity;
 
-public class Veiculo extends Pessoa {
+public class Veiculo{
  private String placa;
     private String modelo;
     private int ano;
@@ -13,7 +13,7 @@ public class Veiculo extends Pessoa {
         this.placa = placa;
         this.modelo = modelo;
         this.ano = ano;
-        this.emUso = false;
+        this.estaEmUso = false;
     }
 
     public String getPlaca() {
@@ -29,11 +29,11 @@ public class Veiculo extends Pessoa {
     }
 
     public boolean isEmUso() {
-        return emUso;
+        return estaEmUso;
     }
 
     public void setEmUso(boolean emUso) {
-        this.emUso = emUso;
+        this.estaEmUso = emUso;
     }
 
     @Override
