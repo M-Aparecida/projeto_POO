@@ -57,4 +57,123 @@ public class PassageiroDAO {
             return false;
         }
     }
+
+    public Passageiro buscarPorId(int id) {
+        String sql = "SELECT * FROM passageiro WHERE id_passageiro = ?";
+
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Passageiro(
+                    rs.getString("nome"),
+                    rs.getString("cpf"),
+                    rs.getString("email"),
+                    rs.getString("telefone"),
+                    rs.getString("senha"),
+                    rs.getString("genero"),
+                    rs.getInt("id_passageiro"),
+                    rs.getString("cartao_dados"),
+                    rs.getInt("qtd_corridas"),
+                    rs.getInt("avaliacao_media"),
+                    rs.getInt("idade")
+                );
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar passageiro por ID: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public boolean alterarNome(String novoNome, int id_passageiro){
+        String sql = "UPDATE passageiro SET nome = ? where id_passageiro = ?";
+         
+        try(Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+                ps.setString(1, novoNome);
+                ps.setInt(2, id_passageiro);
+                ps.executeUpdate();
+                return true;
+        }catch (SQLException e) {
+            System.out.println("Erro ao alterar nome" + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean alterarCpf(String novoCpf, int id_passageiro) {
+        String sql = "UPDATE passageiro SET cpf = ? WHERE id_passageiro = ?";
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, novoCpf);
+            ps.setInt(2, id_passageiro);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Erro ao alterar CPF: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean alterarEmail(String novoEmail, int id_passageiro) {
+        String sql = "UPDATE passageiro SET email = ? WHERE id_passageiro = ?";
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, novoEmail);
+            ps.setInt(2, id_passageiro);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Erro ao alterar e-mail: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean alterarTelefone(String novoTelefone, int id_passageiro) {
+        String sql = "UPDATE passageiro SET telefone = ? WHERE id_passageiro = ?";
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, novoTelefone);
+            ps.setInt(2, id_passageiro);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Erro ao alterar telefone: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public Passageiro buscarPorEmail(String email) {
+        String sql = "SELECT * FROM passageiro WHERE email = ?";
+
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Passageiro(
+                    rs.getString("nome"),
+                    rs.getString("cpf"),
+                    rs.getString("email"),
+                    rs.getString("telefone"),
+                    rs.getString("senha"),
+                    rs.getString("genero"),
+                    rs.getInt("id_passageiro"),
+                    rs.getString("cartao_dados"),
+                    rs.getInt("qtd_corridas"),
+                    rs.getInt("avaliacao_media"),
+                    rs.getInt("idade")
+                );
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar passageiro por e-mail: " + e.getMessage());
+        }
+        return null;
+    }
 }

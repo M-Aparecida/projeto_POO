@@ -13,8 +13,6 @@ public class App {
 
     public static void main(String[] args) {
         telaBoasVindas();
-        limparTela();
-        Passageiro.listarPassageiros();
     }
 
     public static void telaBoasVindas() {
@@ -199,9 +197,58 @@ public class App {
             System.out.print("Escolha uma opção: ");
             String opcao = scanner.nextLine();
 
-            if (opcao.equals("0")) return;
-            // Aqui você só exibiria mensagens tipo:
-            System.out.println("Função de edição não implementada ainda.");
+            switch (opcao) {
+                case "1":
+                    System.out.println("Insira o novo nome:");
+                    String novoNome = scanner.nextLine();
+                    if (p.modificarValoresPassageiro("nome", novoNome)) {
+                        p.setNome(novoNome);
+                        System.out.println("Nome alterado com sucesso!");
+                    } else {
+                        System.out.println("Falha ao alterar nome.");
+                    }
+                    break;
+
+                case "2":
+                    System.out.println("Insira o novo CPF (xxx.xxx.xxx-xx):");
+                    String novoCpf = scanner.nextLine();
+                    if (p.modificarValoresPassageiro("cpf", novoCpf)) {
+                        p.setCpf(novoCpf);
+                        System.out.println("CPF alterado com sucesso!");
+                    } else {
+                        System.out.println("Falha ao alterar CPF.");
+                    }
+                    break;
+
+                case "3":
+                    System.out.println("Insira o novo e-mail:");
+                    String novoEmail = scanner.nextLine();
+                    if (p.modificarValoresPassageiro("email", novoEmail)) {
+                        p.setEmail(novoEmail);
+                        System.out.println("E-mail alterado com sucesso!");
+                    } else {
+                        System.out.println("Falha ao alterar e-mail.");
+                    }
+                    break;
+
+                case "4": 
+                    System.out.println("Insira o novo telefone ((xx) xxxxx-xxxx):");
+                    String novoTelefone = scanner.nextLine();
+                    if (p.modificarValoresPassageiro("telefone", novoTelefone)) {
+                        p.setTelefone(novoTelefone);
+                        System.out.println("Telefone alterado com sucesso!");
+                    } else {
+                        System.out.println("Falha ao alterar telefone.");
+                    }
+                    break;
+
+                case "0":
+                    return;
+
+                default:
+                    System.out.println("Opção inválida.");
+            }
+
         }
     }
 
