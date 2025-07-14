@@ -48,16 +48,45 @@ public class Passageiro extends Pessoa {
         }
     }
 
-public boolean cadastroPassageiro(String nome, String email, String cpf, String senha, String cartaoDados, int idade, String genero, String telefone){
-        Passageiro p = new Passageiro(nome, cpf, email, telefone, senha, genero, idade);
+    public boolean cadastroPassageiro(String nome, String email, String cpf, String senha, String cartaoDados, int idade, String genero, String telefone){
+            Passageiro p = new Passageiro(nome, cpf, email, telefone, senha, genero, idade);
+
+            PassageiroDAO dao = new PassageiroDAO();
+            if(dao.cadastraPassageiro(p)){
+                return true;
+            }else{
+                return false;
+            }
+    }
+
+    public Passageiro getDadosPassageiro() {
+        if (this.idPassageiro == 0) {
+            System.out.println("Passageiro sem ID definido.");
+            return null;
+        }
 
         PassageiroDAO dao = new PassageiroDAO();
-        if(dao.cadastraPassageiro(p)){
-            return true;
-        }else{
+        return dao.buscarPorId(this.idPassageiro);
+    }
+
+
+    public boolean modificarValoresPassageiro(String campo, String novoValor) {
+    PassageiroDAO dao = new PassageiroDAO();
+    switch (campo.toLowerCase()) {
+        case "nome":
+            return dao.alterarNome(novoValor, this.getIdPassageiro());
+        case "cpf":
+            return dao.alterarCpf(novoValor, this.getIdPassageiro());
+        case "email":
+            return dao.alterarEmail(novoValor, this.getIdPassageiro());
+        case "telefone":
+                return dao.alterarTelefone(novoValor, this.getIdPassageiro());
+        default:
+            System.out.println("Campo inválido.");
             return false;
-        }
+    }
 }
+
 
     public int getIdPassageiro() {
         return idPassageiro;

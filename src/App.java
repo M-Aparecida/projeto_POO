@@ -5,14 +5,13 @@ import java.util.Scanner;
 
 import DAO.PassageiroDAO;
 
+
 public class App {
 
     static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         telaBoasVindas();
-        limparTela();
-        Passageiro.listarPassageiros();
     }
 
     public static void telaBoasVindas() {
@@ -44,6 +43,7 @@ public class App {
     public static void menuPassageiroLoginCadastro() {
         while (true) {
             limparTela();
+            Passageiro p = new Passageiro();
             System.out.println("\n=== Menu Passageiro ===");
             System.out.println("1. Fazer Login");
             System.out.println("2. Cadastrar-se");
@@ -53,13 +53,30 @@ public class App {
 
             switch (opcao) {
                 case "1":
-                    menuInicialPassageiro();
+                    limparTela();
+                    System.out.println("=== Login Passageiro ===");
+                    System.out.print("E-mail: ");
+                    String emailLogin = scanner.nextLine();
+                    System.out.print("Senha: ");
+                    String senhaLogin = scanner.nextLine();
+
+                    PassageiroDAO daoLogin = new PassageiroDAO();
+                    Passageiro loginTemp = daoLogin.buscarPorEmail(emailLogin);
+
+                    if (loginTemp != null && loginTemp.login(emailLogin, senhaLogin)) {
+                        menuInicialPassageiro(loginTemp.getDadosPassageiro());
+                    } else {
+                        System.out.println("E-mail ou senha inválidos.");
+                    }
+                    break;
+                    
                 case "2":
                     if (menuCadastroPassageiro()) {
-                        menuInicialPassageiro();
+                        menuInicialPassageiro(p.getDadosPassageiro());
                     }else{
                         menuCadastroPassageiro();
                     }
+                    break;
                 case "0":
                     return;
                 default:
@@ -135,7 +152,7 @@ public class App {
         return p.cadastroPassageiro(p.getNome(), p.getEmail(), p.getCpf(), p.getSenha(), p.getCartaoDados(), p.getIdade(), p.getGenero(), p.getTelefone());
     }
 
-    public static void menuInicialPassageiro() {
+    public static void menuInicialPassageiro(Passageiro p) {
         while (true) {
             limparTela();
             System.out.println("\n=== Tela Inicial do Passageiro ===");
@@ -149,10 +166,9 @@ public class App {
 
             switch (opcao) {
                 case "1":
-                    menuEditarCadastro();
+                    menuEditarCadastroPassageiro(p);
                     break;
                 case "2":
-                    // Procurar corrida - você implementa depois
                     break;
                 case "3":
                     menuHistoricoCorridas();
@@ -168,7 +184,7 @@ public class App {
         }
     }
 
-    public static void menuEditarCadastro() {
+    public static void menuEditarCadastroPassageiro(Passageiro p) {
         while (true) {
             limparTela();
             System.out.println("\n=== Editar Cadastro ===");
@@ -180,9 +196,58 @@ public class App {
             System.out.print("Escolha uma opção: ");
             String opcao = scanner.nextLine();
 
-            if (opcao.equals("0")) return;
-            // Aqui você só exibiria mensagens tipo:
-            System.out.println("Função de edição não implementada ainda.");
+            switch (opcao) {
+                case "1":
+                    System.out.println("Insira o novo nome:");
+                    String novoNome = scanner.nextLine();
+                    if (p.modificarValoresPassageiro("nome", novoNome)) {
+                        p.setNome(novoNome);
+                        System.out.println("Nome alterado com sucesso!");
+                    } else {
+                        System.out.println("Falha ao alterar nome.");
+                    }
+                    break;
+
+                case "2":
+                    System.out.println("Insira o novo CPF (xxx.xxx.xxx-xx):");
+                    String novoCpf = scanner.nextLine();
+                    if (p.modificarValoresPassageiro("cpf", novoCpf)) {
+                        p.setCpf(novoCpf);
+                        System.out.println("CPF alterado com sucesso!");
+                    } else {
+                        System.out.println("Falha ao alterar CPF.");
+                    }
+                    break;
+
+                case "3":
+                    System.out.println("Insira o novo e-mail:");
+                    String novoEmail = scanner.nextLine();
+                    if (p.modificarValoresPassageiro("email", novoEmail)) {
+                        p.setEmail(novoEmail);
+                        System.out.println("E-mail alterado com sucesso!");
+                    } else {
+                        System.out.println("Falha ao alterar e-mail.");
+                    }
+                    break;
+
+                case "4": 
+                    System.out.println("Insira o novo telefone ((xx) xxxxx-xxxx):");
+                    String novoTelefone = scanner.nextLine();
+                    if (p.modificarValoresPassageiro("telefone", novoTelefone)) {
+                        p.setTelefone(novoTelefone);
+                        System.out.println("Telefone alterado com sucesso!");
+                    } else {
+                        System.out.println("Falha ao alterar telefone.");
+                    }
+                    break;
+
+                case "0":
+                    return;
+
+                default:
+                    System.out.println("Opção inválida.");
+            }
+
         }
     }
 
@@ -254,7 +319,6 @@ public class App {
 
             switch (opcao) {
                 case "1":
-                    menuEditarCadastro();
                     break;
                 case "2":
                     menuHistoricoCorridas();
