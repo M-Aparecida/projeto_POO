@@ -1,5 +1,6 @@
 package entity;
 
+import java.util.List;
 import java.util.Scanner;
 
 import DAO.MotoristaDAO;
@@ -9,7 +10,12 @@ public class Motorista extends Pessoa {
     private int idMotorista;
     private boolean disponivel;
 
-    //construtor de exibir
+    public Motorista(){
+        this.disponivel = true;
+        setQuantidadeCorridas(0);
+        setAvaliacaoMedia(0.0f);
+    }
+    //construtor p exibir
    public Motorista( int idMotorista,String nome, String cpf, String email, String telefone, String senha, String genero,
                  int idade, int numeroCnh, boolean disponivel, int quantidadeCorridas, float avaliacaoMedia) {
     super(nome, cpf, email, telefone, idade, senha, genero);
@@ -21,14 +27,14 @@ public class Motorista extends Pessoa {
 }
 
 
-    //construtor de inserir
+    //construtor p inserir
     public Motorista(String nome, String cpf, String email, String telefone, String senha, String genero, int idade,
-            int numeroCnh, boolean disponivel, int quantidadeCorridas, float avaliacaoMedia) {
+            int numeroCnh) {
         super(nome, cpf, email, telefone, idade, senha, genero);
         this.numeroCnh = numeroCnh;
-        this.disponivel = disponivel;
-        super.setAvaliacaoMedia(avaliacaoMedia);
-        super.setQuantidadeCorridas(quantidadeCorridas);
+        this.disponivel = disponivel=  true; 
+        this.setQuantidadeCorridas(0); // começa com zero corridas e avaliação tbm eh igual a 0
+        this.setAvaliacaoMedia(0.0f); 
     }
     
     public int getNumeroCnh() {
@@ -36,7 +42,13 @@ public class Motorista extends Pessoa {
     }
 
     public void setNumeroCnh(int numeroCnh) {
-        this.numeroCnh = numeroCnh;
+        String cnhStr = String.valueOf(numeroCnh);
+
+            if (numeroCnh <= 0 || cnhStr.length() != 11) {
+                throw new IllegalArgumentException("O número da CNH deve conter exatamente 11 dígitos e ser positivo.");
+            }
+
+            this.numeroCnh = numeroCnh;    
     }
 
     public int getIdMotorista() {
@@ -56,32 +68,38 @@ public class Motorista extends Pessoa {
     }
     
 
-    private Motorista cadastroMotorista(){
-       Motorista m = new Motorista();
-       Scanner ent = new Scanner(System.in);
+    public static boolean cadastroMotorista( String nome, String cpf, String email, String telefone, String senha, String genero, int idade,int numeroCnh){
+        Motorista motorista = new Motorista(nome, cpf, email, telefone, senha, genero, idade, numeroCnh);
 
-       System.out.print("Insira o seu nome: ");
-        m.setNome(ent.nextLine());
-        System.out.print("Insira o seu CPF: ");
-        m.setCpf(ent.nextLine());
-        System.out.print("Insira o seu email: ");
-        m.setEmail(ent.nextLine());
-        System.out.print("Insira o seu telefone: ");
-        m.setTelefone(ent.nextLine());
-        System.out.print("Insira a sua senha: ");
-        m.setSenha(ent.nextLine());
-        System.out.print("Insira o seu genero: ");
-        m.setGenero(ent.nextLine());
-        System.out.print("Insira a sua idade: ");
-        m.setIdade(ent.nextInt());
-        System.out.print("Insira o numero da sua cnh: ");
-        m.setNumeroCnh(ent.nextInt());
-        System.out.print("Insira se você está disponível ou não: ");
-        m.setDisponivel(ent.nextBoolean());
-
-
-
+        MotoristaDAO dao = new MotoristaDAO();
+        if(dao.cadastrarMotorista(motorista)){
+            return true;
+        }else{
+            return false;
+        }
     }
+
+     public static void listarMotoristas(){
+        MotoristaDAO dao = new MotoristaDAO();
+        List<Motorista> motoristas = dao.listarMotoristas();
+        System.out.printf("| %-3s | %-30s | %-30s | %-16s | %-10s | %-22s | %-9s |\n",
+        "ID", "Nome", "Email", "Telefone", "Gênero", "Quantidade de Corridas", "Avaliação");
+        System.out.println("|-----|--------------------------------|--------------------------------|------------------|------------|------------------------|-----------|");
+        for (Motorista motorista : motoristas) {
+            System.out.printf("| %-3d | %-30s | %-30s | %-16s | %-10s | %-22d | %-9.2f |\n",
+                    motorista.getIdMotorista(),
+                    motorista.getNome(),
+                    motorista.getEmail(),
+                    motorista.getTelefone(),
+                    motorista.getGenero(),
+                    motorista.getQuantidadeCorridas(),
+                    motorista.getAvaliacaoMedia());
+        }
+    }
+
+   // public boolean modificarValoresMotorista(){
+
+   // }
 
 
     public boolean aceitarCorrida(int corridaID) {
