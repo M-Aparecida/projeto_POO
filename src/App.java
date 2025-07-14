@@ -1,3 +1,4 @@
+import entity.Motorista;
 import entity.Passageiro;
 
 import java.util.InputMismatchException;
@@ -12,7 +13,7 @@ public class App {
     public static void main(String[] args) {
         telaBoasVindas();
         limparTela();
-        Passageiro.listarPassageiros();
+        
     }
 
     public static void telaBoasVindas() {
@@ -74,31 +75,31 @@ public class App {
         limparTela();
         System.out.print("Insira o seu nome: ");
         p.setNome(scanner.nextLine());
+        limparTela();
 
         do{
-            limparTela();
             try {
                 System.out.print("Insira o seu CPF (xxx.xxx.xxx-xx): ");
                 p.setCpf(scanner.nextLine());
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println("CPF no formato inválido");
+                System.out.println("CPF no formato inválido, insira novamente!");
             }
         }while(true);
+        limparTela();
 
         do{
-            limparTela();
             try {
                 System.out.print("Insira o seu email: ");
                 p.setEmail(scanner.nextLine());
                 break;
             }catch (IllegalArgumentException e) {
-                System.out.println("Email no formato invalido.");
+                System.out.println("Email no formato invalido, insira novamente!");
             }
         }while(true);
-        
+          limparTela();
         do {
-            limparTela();
+          
             try {
                 System.out.print("Insira o seu telefone ((xx) xxxxx-xxxx): ");
                 p.setTelefone(scanner.nextLine());  
@@ -111,9 +112,9 @@ public class App {
         limparTela();
         System.out.print("Insira a sua senha: ");
         p.setSenha(scanner.nextLine());
-
-        do{
             limparTela();
+        do{
+            
             try {
                 System.out.print("Insira a sua idade: ");
                 p.setIdade(scanner.nextInt());
@@ -181,7 +182,6 @@ public class App {
             String opcao = scanner.nextLine();
 
             if (opcao.equals("0")) return;
-            // Aqui você só exibiria mensagens tipo:
             System.out.println("Função de edição não implementada ainda.");
         }
     }
@@ -229,8 +229,11 @@ public class App {
             switch (opcao) {
                 case "1":
                 case "2":
-                    menuInicialMotorista();
-                    return;
+                    if (menuCadastroMotorista()) {
+                        menuInicialPassageiro();
+                    }else{
+                        menuCadastroMotorista();
+                    }                    
                 case "0":
                     return;
                 default:
@@ -311,6 +314,89 @@ public class App {
             System.out.println();
         }
     }
+    public static boolean menuCadastroMotorista(){
+        Motorista motorista = new Motorista();
+
+        limparTela();
+        System.out.print("Insira o seu nome: ");
+        motorista.setNome(scanner.nextLine());
+
+        do{
+            limparTela();
+            try {
+                System.out.print("Insira o seu CPF (xxx.xxx.xxx-xx): ");
+                motorista.setCpf(scanner.nextLine());
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println("CPF no formato inválido");
+            }
+        }while(true);
+
+        do{
+            limparTela();
+            try {
+                System.out.print("Insira o seu email: ");
+                motorista.setEmail(scanner.nextLine());
+                break;
+            }catch (IllegalArgumentException e) {
+                System.out.println("Email no formato invalido.");
+            }
+        }while(true);
+        
+        do {
+            limparTela();
+            try {
+                System.out.print("Insira o seu telefone ((xx) xxxxx-xxxx): ");
+                motorista.setTelefone(scanner.nextLine());  
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println("Telefone no formato invalido");
+            }
+        } while (true);
+
+        limparTela();
+        System.out.print("Insira a sua senha: ");
+        motorista.setSenha(scanner.nextLine());
+
+         limparTela();
+        System.out.print("Insira o seu genero: ");
+        motorista.setGenero(scanner.nextLine());
+
+        do{
+            limparTela();
+            try {
+                System.out.print("Insira a sua idade: ");
+                motorista.setIdade(scanner.nextInt());
+                scanner.nextLine();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Idade deve ser um inteiro.");
+                scanner.nextLine();
+            }catch(IllegalArgumentException e){
+                System.out.println("Insira uma idade válida 1-120");
+                scanner.nextLine();
+            }
+        }while(true);
+
+       do {
+            limparTela();
+            try {
+                System.out.print("Insira o numero da sua CNH (11 dígitos): ");
+                String entrada = scanner.nextLine(); // sempre leia linha inteira
+                motorista.setNumeroCnh(Integer.parseInt(entrada));
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("A CNH deve conter apenas números.");
+            } catch (IllegalArgumentException e) {
+                System.out.println("CNH inválida. Ela deve conter exatamente 11 dígitos.");
+            }
+        } while (true);
+
+
+        return Motorista.cadastroMotorista( motorista.getNome(),motorista.getCpf(),motorista.getEmail(),motorista.getTelefone(),
+            motorista.getSenha(),motorista.getGenero(), motorista.getIdade(), motorista.getNumeroCnh());
+    }
+
 
 }
 
