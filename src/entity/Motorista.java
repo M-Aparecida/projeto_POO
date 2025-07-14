@@ -32,7 +32,7 @@ public class Motorista extends Pessoa {
             int numeroCnh) {
         super(nome, cpf, email, telefone, idade, senha, genero);
         this.numeroCnh = numeroCnh;
-        this.disponivel = disponivel=  true; 
+        this.disponivel = true; 
         this.setQuantidadeCorridas(0); // começa com zero corridas e avaliação tbm eh igual a 0
         this.setAvaliacaoMedia(0.0f); 
     }
