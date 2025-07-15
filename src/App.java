@@ -12,8 +12,7 @@ public class App {
     static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        //telaBoasVindas();
-        Passageiro.listarPassageiros();
+        telaBoasVindas();       
     }
 
     public static void telaBoasVindas() {
