@@ -6,7 +6,7 @@ import java.util.Scanner;
 import DAO.MotoristaDAO;
 
 public class Motorista extends Pessoa {
-    private int numeroCnh;
+    private long numeroCnh;
     private int idMotorista;
     private boolean disponivel;
 
@@ -17,7 +17,7 @@ public class Motorista extends Pessoa {
     }
     //construtor p exibir
    public Motorista( int idMotorista,String nome, String cpf, String email, String telefone, String senha, String genero,
-                 int idade, int numeroCnh, boolean disponivel, int quantidadeCorridas, float avaliacaoMedia) {
+                 int idade, long numeroCnh, boolean disponivel, int quantidadeCorridas, float avaliacaoMedia) {
     super(nome, cpf, email, telefone, idade, senha, genero);
     this.idMotorista = idMotorista;
     this.numeroCnh = numeroCnh;
@@ -29,7 +29,7 @@ public class Motorista extends Pessoa {
 
     //construtor p inserir
     public Motorista(String nome, String cpf, String email, String telefone, String senha, String genero, int idade,
-            int numeroCnh) {
+            long numeroCnh) {
         super(nome, cpf, email, telefone, idade, senha, genero);
         this.numeroCnh = numeroCnh;
         this.disponivel = true; 
@@ -37,11 +37,11 @@ public class Motorista extends Pessoa {
         this.setAvaliacaoMedia(0.0f); 
     }
     
-    public int getNumeroCnh() {
+    public long getNumeroCnh() {
         return numeroCnh;
     }
 
-    public void setNumeroCnh(int numeroCnh) {
+    public void setNumeroCnh(long numeroCnh) {
         String cnhStr = String.valueOf(numeroCnh);
 
             if (numeroCnh <= 0 || cnhStr.length() != 11) {
@@ -68,7 +68,7 @@ public class Motorista extends Pessoa {
     }
     
 
-    public static boolean cadastroMotorista( String nome, String cpf, String email, String telefone, String senha, String genero, int idade,int numeroCnh){
+    public static boolean cadastroMotorista( String nome, String cpf, String email, String telefone, String senha, String genero, int idade, long numeroCnh){
         Motorista motorista = new Motorista(nome, cpf, email, telefone, senha, genero, idade, numeroCnh);
 
         MotoristaDAO dao = new MotoristaDAO();
@@ -110,7 +110,7 @@ public class Motorista extends Pessoa {
         return true;
     }
 
-    public boolean modificarValoresMotorista(String nome, String email, String senha, int numeroCnh){
+    public boolean modificarValoresMotorista(String nome, String email, String senha, long numeroCnh){
         return false;
     }
 

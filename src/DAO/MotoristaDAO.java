@@ -26,7 +26,7 @@ public class MotoristaDAO{
         ps.setString(7, motorista.getGenero());
         ps.setInt(8, motorista.getQuantidadeCorridas());
         ps.setFloat(9, motorista.getAvaliacaoMedia());
-        ps.setInt(10, motorista.getNumeroCnh());
+        ps.setLong(10, motorista.getNumeroCnh());
         ps.setBoolean(11, motorista.isDisponivel());
 
         ps.executeUpdate();

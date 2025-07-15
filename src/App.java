@@ -12,7 +12,8 @@ public class App {
     static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        telaBoasVindas();
+        //telaBoasVindas();
+        Passageiro.listarPassageiros();
     }
 
     public static void telaBoasVindas() {
@@ -444,13 +445,14 @@ public class App {
         }while(true);
 
        do {
-            limparTela();
+            
             try {
                 System.out.print("Insira o numero da sua CNH (11 dígitos): ");
-                String entrada = scanner.nextLine(); // sempre leia linha inteira
-                motorista.setNumeroCnh(Integer.parseInt(entrada));
+                String entrada = scanner.nextLine(); 
+                motorista.setNumeroCnh(Long.parseLong(entrada));
                 break;
             } catch (NumberFormatException e) {
+                System.out.println(e.getMessage());
                 System.out.println("A CNH deve conter apenas números.");
             } catch (IllegalArgumentException e) {
                 System.out.println("CNH inválida. Ela deve conter exatamente 11 dígitos.");
