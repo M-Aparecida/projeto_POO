@@ -89,6 +89,12 @@ public class Passageiro extends Pessoa {
         }
     }
 
+    public Passageiro buscarPassageiro(String email){
+        PassageiroDAO dao = new PassageiroDAO();
+        Passageiro p = dao.buscarPorEmail(email);
+        return p;
+    }
+
     public static void avaliarPassageiro(int idPassageiro){
         Scanner ent = new Scanner(System.in);
         float avaliacao = 0;
