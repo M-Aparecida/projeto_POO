@@ -94,7 +94,7 @@ public class Passageiro extends Pessoa {
         }
     }
 
-    public Passageiro buscarPassageiro(String email){
+    public static Passageiro buscarPassageiro(String email){
         PassageiroDAO dao = new PassageiroDAO();
         Passageiro p = dao.buscarPorEmail(email);
         return p;
