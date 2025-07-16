@@ -10,6 +10,7 @@ import java.util.List;
 import java.sql.Statement;
 import conexao.Conexao;
 import entity.Motorista;
+import entity.Passageiro;
 public class MotoristaDAO{
  public boolean cadastrarMotorista(Motorista motorista) {
     String sql = "INSERT INTO motorista(nome, cpf, email, telefone, senha, idade, genero, qtd_corridas, avaliacao_media, numero_cnh, disponivel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -55,7 +56,7 @@ public List<Motorista> listarMotoristas() {
         ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
-            Motorista p = new Motorista(
+            Motorista m = new Motorista(
                 rs.getInt("id_motorista"),
                 rs.getString("nome"), 
                 rs.getString("cpf"), 
@@ -69,7 +70,7 @@ public List<Motorista> listarMotoristas() {
                 rs.getInt("qtd_corridas"), 
                 rs.getFloat("avaliacao_media") 
             );
-            motoristas.add(p);
+            motoristas.add(m);
         }
 
     } catch (SQLException e) {
@@ -79,7 +80,69 @@ public List<Motorista> listarMotoristas() {
     return motoristas;
 }
 
+ public Motorista buscarMotoristaPorNome(String nome) {
+        String sql = "SELECT * FROM motorista WHERE nome = ?";
 
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, nome);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Motorista(
+                rs.getInt("id_motorista"),
+                rs.getString("nome"), 
+                rs.getString("cpf"), 
+                rs.getString("email"), 
+                rs.getString("telefone"), 
+                rs.getString("senha"), 
+                rs.getString("genero"),      
+                rs.getInt("idade"),
+                rs.getInt("numero_cnh"), 
+                rs.getBoolean("disponivel"), 
+                rs.getInt("qtd_corridas"), 
+                rs.getFloat("avaliacao_media") 
+                );
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar passageiro por nome: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+
+    public Passageiro buscarPorEmail(String email) {
+        String sql = "SELECT * FROM motorista WHERE email = ?";
+
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Passageiro(
+                    rs.getString("nome"),
+                    rs.getString("cpf"),
+                    rs.getString("email"),
+                    rs.getString("telefone"),
+                    rs.getString("senha"),
+                    rs.getString("genero"),
+                    rs.getInt("id_passageiro"),
+                    rs.getString("cartao_dados"),
+                    rs.getInt("qtd_corridas"),
+                    rs.getInt("avaliacao_media"),
+                    rs.getInt("idade")
+                );
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar passageiro por e-mail: " + e.getMessage());
+        }
+        return null;
+    }
     
 }
 

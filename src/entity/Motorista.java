@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import DAO.MotoristaDAO;
+import DAO.PassageiroDAO;
 
 public class Motorista extends Pessoa {
     private long numeroCnh;
@@ -36,6 +37,7 @@ public class Motorista extends Pessoa {
         this.setQuantidadeCorridas(0); // começa com zero corridas e avaliação tbm eh igual a 0
         this.setAvaliacaoMedia(0.0f); 
     }
+    
     
     public long getNumeroCnh() {
         return numeroCnh;

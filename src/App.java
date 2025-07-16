@@ -4,6 +4,7 @@ import entity.Passageiro;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import DAO.MotoristaDAO;
 import DAO.PassageiroDAO;
 
 
@@ -12,8 +13,7 @@ public class App {
     static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        //telaBoasVindas();
-        Passageiro.listarPassageiros();
+        telaBoasVindas();
     }
 
     public static void telaBoasVindas() {
@@ -295,9 +295,25 @@ public class App {
 
             switch (opcao) {
                 case "1":
+                limparTela();
+                    System.out.println("=== Login Motorista ===");
+                    System.out.print("E-mail: ");
+                    String emailLogin = scanner.nextLine();
+                    System.out.print("Senha: ");
+                    String senhaLogin = scanner.nextLine();
+
+                    MotoristaDAO daoLogin = new MotoristaDAO();
+                    Motorista loginTemp = daoLogin.buscarMotoristaPorNome(emailLogin);
+
+                    if (loginTemp != null && loginTemp.login(emailLogin, senhaLogin)) {
+                        menuInicialPassageiro(loginTemp.getDadosMotorista());
+                    } else {
+                        System.out.println("E-mail ou senha inválidos.");
+                    }
+                    break;
                 case "2":
                     if (menuCadastroMotorista()) {
-                        menuInicialMotorista();
+                        menuMotoristaLoginCadastro();
                     }else{
                         menuCadastroMotorista();
                     }                    
@@ -386,9 +402,9 @@ public class App {
         limparTela();
         System.out.print("Insira o seu nome: ");
         motorista.setNome(scanner.nextLine());
+        limparTela();
 
         do{
-            limparTela();
             try {
                 System.out.print("Insira o seu CPF (xxx.xxx.xxx-xx): ");
                 motorista.setCpf(scanner.nextLine());
@@ -397,9 +413,10 @@ public class App {
                 System.out.println("CPF no formato inválido");
             }
         }while(true);
+        limparTela();
+
 
         do{
-            limparTela();
             try {
                 System.out.print("Insira o seu email: ");
                 motorista.setEmail(scanner.nextLine());
@@ -408,9 +425,9 @@ public class App {
                 System.out.println("Email no formato invalido.");
             }
         }while(true);
-        
+        limparTela();
         do {
-            limparTela();
+            
             try {
                 System.out.print("Insira o seu telefone ((xx) xxxxx-xxxx): ");
                 motorista.setTelefone(scanner.nextLine());  
@@ -427,9 +444,9 @@ public class App {
          limparTela();
         System.out.print("Insira o seu genero: ");
         motorista.setGenero(scanner.nextLine());
-
+        limparTela();
         do{
-            limparTela();
+           
             try {
                 System.out.print("Insira a sua idade: ");
                 motorista.setIdade(scanner.nextInt());
@@ -443,6 +460,8 @@ public class App {
                 scanner.nextLine();
             }
         }while(true);
+
+        limparTela();
 
        do {
             
