@@ -28,8 +28,13 @@ public class Passageiro extends Pessoa {
     }
 
     public boolean realizarPagamento(float valor, String metodoPagamento){
-        if (valor > 0.0F) return true;
-        return false;
+        if (valor > 0) {
+            System.out.println("Pagamento de R$" + valor + " no " + metodoPagamento + "efetuado.");
+            return true;    
+        }else{
+            System.out.println("valor inválido.");
+            return false;
+        }
     }
 
     public static void listarPassageiros(){
