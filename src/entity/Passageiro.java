@@ -1,5 +1,7 @@
 package entity;
+import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Scanner;
 
 import DAO.PassageiroDAO;
 
@@ -26,8 +28,13 @@ public class Passageiro extends Pessoa {
     }
 
     public boolean realizarPagamento(float valor, String metodoPagamento){
-        if (valor > 0.0F) return true;
-        return false;
+        if (valor > 0) {
+            System.out.println("Pagamento de R$" + valor + " no " + metodoPagamento + "efetuado.");
+            return true;    
+        }else{
+            System.out.println("valor inválido.");
+            return false;
+        }
     }
 
     public static void listarPassageiros(){
@@ -84,9 +91,38 @@ public class Passageiro extends Pessoa {
         default:
             System.out.println("Campo inválido.");
             return false;
+        }
     }
-}
 
+    public static Passageiro buscarPassageiro(String email){
+        PassageiroDAO dao = new PassageiroDAO();
+        Passageiro p = dao.buscarPorEmail(email);
+        return p;
+    }
+
+    public static void avaliarPassageiro(int idPassageiro){
+        Scanner ent = new Scanner(System.in);
+        float avaliacao = 0;
+        PassageiroDAO dao = new PassageiroDAO();
+        
+        do{
+            try {
+                System.out.print("Insira sua nota para o passageiro de 0-5: ");
+                avaliacao = ent.nextFloat();
+                if(avaliacao >= 0 && avaliacao <= 5){
+                    dao.updateAvaliacao(avaliacao, idPassageiro); 
+                    break;  
+                }else{
+                    System.out.println("insira um valor de 0-5");
+                    continue;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("O valor deve ser um inteiro");   
+                ent.nextLine();
+            }
+        }while(true);
+        ent.close();
+    }
 
     public int getIdPassageiro() {
         return idPassageiro;

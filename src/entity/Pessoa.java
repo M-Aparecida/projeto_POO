@@ -131,14 +131,5 @@ public abstract class Pessoa {
 
     public void setAvaliacaoMedia(float avaliacaoMedia) {
         this.avaliacaoMedia = avaliacaoMedia;
-    }
-
-    @Override
-    public String toString() {
-        return "nome=" + nome + ", cpf=" + cpf + ", email=" + email + ", telefone=" + telefone + ", senha="
-                + senha + ", idade=" + idade + ", genero=" + genero + ", quantidadeCorridas=" + quantidadeCorridas
-                + ", avaliacaoMedia=" + avaliacaoMedia;
-    }
-
-    
+    }   
 }

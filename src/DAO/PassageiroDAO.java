@@ -21,7 +21,7 @@ public class PassageiroDAO {
                 ResultSet rs = ps.executeQuery();
 
                 while (rs.next()) {
-                    Passageiro p = new Passageiro(rs.getString("nome"), rs.getString("cpf"), rs.getString("email"), rs.getString("telefone"), rs.getString("senha"), rs.getString("genero"), rs.getInt("id_passageiro"), rs.getString("cartao_dados"), rs.getInt("qtd_corridas"), rs.getInt("avaliacao_media"), rs.getInt("idade"));
+                    Passageiro p = new Passageiro(rs.getString("nome"), rs.getString("cpf"), rs.getString("email"), rs.getString("telefone"), rs.getString("senha"), rs.getString("genero"), rs.getInt("id_passageiro"), rs.getString("cartao_dados"), rs.getInt("qtd_corridas"), rs.getFloat("avaliacao_media"), rs.getInt("idade"));
 
                     passageiros.add(p);
                 }
@@ -175,5 +175,35 @@ public class PassageiroDAO {
             System.out.println("Erro ao buscar passageiro por e-mail: " + e.getMessage());
         }
         return null;
+    }
+    
+    public void updateAvaliacao(float avaliacao, int id_passageiro){
+        String sqlQtdCorridas = "SELECT qtd_corridas, avaliacao_media FROM passageiro WHERE id_passageiro = ?";
+        int qtdCorridas = 0;
+        float avaliacaoMedia = 0;
+        float novaAvalicaoMedia = 0;
+        
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sqlQtdCorridas)) {
+            ps.setInt(1, id_passageiro);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            qtdCorridas = rs.getInt("qtd_corridas");
+            avaliacaoMedia = rs.getFloat("avaliacao_media");
+        } catch (SQLException e) {
+            System.out.println("Erro ao consultar qtd_corridas e avaliacao_media: " + e.getMessage());
+        }
+        
+        novaAvalicaoMedia = ((avaliacaoMedia * qtdCorridas) + avaliacao)/ (qtdCorridas+1);
+    
+        String sql = "UPDATE passageiro SET avaliacao_media = ?, qtd_corridas = qtd_corridas+1 WHERE id_passageiro = ?";
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setFloat(1, novaAvalicaoMedia);
+            ps.setInt(2, id_passageiro);
+            ps.executeUpdate(); 
+        } catch (SQLException e) {
+            System.out.println("Erro ao alterar a avalição média: " + e.getMessage());
+        }
     }
 }
