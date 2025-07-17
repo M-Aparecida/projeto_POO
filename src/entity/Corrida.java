@@ -1,5 +1,9 @@
 package entity;
 
+import java.util.List;
+
+import DAO.CorridaDAO;
+
 public class Corrida {
     private String origem;
     private String destino;
@@ -31,7 +35,7 @@ public class Corrida {
         this.passageiroId = passageiroId;
         this.motoristaId = motoristaId;
         this.veiculoId = veiculoId;
-        status = status;
+        this.status = status;
     }
 
     //inserir
@@ -48,7 +52,56 @@ public class Corrida {
         this.passageiroId = passageiroId;
         this.motoristaId = motoristaId;
         this.veiculoId = veiculoId;
-        status = status;
+        this. status = status;
+    }
+
+    public static void listarCorridas() {
+        CorridaDAO dao = new CorridaDAO();
+        List<Corrida> corridas = dao.listarTodasCorridas();
+
+        System.out.printf("| %-40s | %-41s | %-19s | %-27s | %-17s | %-18s | %-7s | %-6s |\n",
+                 "Origem", "Destino", "Data", "Passageiro", "Motorista", "Veículo", "Preço", "Status");
+        System.out.println("|------------------------------------------|-------------------------------------------|---------------------|-----------------------------|-------------------|--------------------|---------|--------|");
+
+        for (Corrida c : corridas) {
+            System.out.printf("| %-40s | %-41s | %-19s | %-27s | %-17s | %-18s | %-7.2f | %-6d |\n",
+                    c.getOrigem(),
+                    c.getDestino(),
+                    c.getData(),
+                    c.getPassageiro(),
+                    c.getMotorista(),
+                    c.getVeiculo(),
+                    c.getPreco(),
+                    c.getStatus()
+            );
+        }
+    }
+
+    public static void listarCorridas(String data1, String data2) {
+        CorridaDAO dao = new CorridaDAO();
+        List<Corrida> corridas = dao.listarCorridasPorPeriodo(data1, data2);
+
+        if (corridas.isEmpty()) {
+            System.out.println("Nenhuma corrida encontrada no período de " + data1 + " a " + data2 + ".");
+            return;
+        }
+
+        System.out.printf("| %-40s | %-41s | %-19s | %-27s | %-17s | %-18s | %-7s | %-6s |\n",
+                 "Origem", "Destino", "Data", "Passageiro", "Motorista", "Veículo", "Preço", "Status");
+        System.out.println("|------------------------------------------|-------------------------------------------|---------------------|-----------------------------|-------------------|--------------------|---------|--------|");
+
+        for (Corrida c : corridas) {
+            System.out.printf("| %-40s | %-41s | %-19s | %-27s | %-17s | %-18s | %-7.2f | %-6d |\n",
+                    c.getOrigem(),
+                    c.getDestino(),
+                    c.getData(),
+                    c.getPassageiro(),
+                    c.getMotorista(),
+                    c.getVeiculo(),
+                    c.getPreco(),
+                    c.getStatus()
+            );
+        }
     }
 
     public String getOrigem() {
@@ -152,7 +205,7 @@ public class Corrida {
     }
 
     public void setStatus(int status) {
-        status = status;
+        this.status = status;
     }
 
 
