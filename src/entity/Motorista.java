@@ -1,10 +1,8 @@
 package entity;
 
 import java.util.List;
-import java.util.Scanner;
 
 import DAO.MotoristaDAO;
-import DAO.PassageiroDAO;
 
 public class Motorista extends Pessoa {
     private long numeroCnh;
@@ -16,6 +14,7 @@ public class Motorista extends Pessoa {
         setQuantidadeCorridas(0);
         setAvaliacaoMedia(0.0f);
     }
+
     //construtor p exibir
    public Motorista( int idMotorista,String nome, String cpf, String email, String telefone, String senha, String genero,
                  int idade, long numeroCnh, boolean disponivel, int quantidadeCorridas, float avaliacaoMedia) {
@@ -119,14 +118,28 @@ public class Motorista extends Pessoa {
         this.disponivel = false;
         return true;
     }
-public static Motorista buscarMotorista(String email){
+public static Motorista buscarMotorista(String nome){
         MotoristaDAO dao = new MotoristaDAO();
-        Motorista m = dao.buscarPorEmail(email);
+        Motorista m = dao.buscarPorEmail(nome);
         return m;
     }
-    public boolean modificarValoresMotorista(String nome, String email, String senha, long numeroCnh){
-        return false;
+    public boolean modificarValoresMotorista(String op, String novaInformacao){
+        MotoristaDAO dao = new MotoristaDAO();
+        switch (op.toLowerCase()) {
+            case "nome":
+                return dao.alterarNome(novaInformacao, this.getIdMotorista());
+            case "email":
+                return dao.alterarEmail(novaInformacao, this.getIdMotorista());
+            case "telefone":
+                return dao.alterarTelefone(novaInformacao, this.getIdMotorista());
+            case "senha":
+                return dao.alterarSenha(novaInformacao, this.getIdMotorista());
+            default:
+                System.out.println("Opção inválida.");
+                return false;
+        }
     }
+
 
     
 }

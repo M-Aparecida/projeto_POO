@@ -12,7 +12,7 @@ import conexao.Conexao;
 import entity.Motorista;
 public class MotoristaDAO{
  public boolean cadastrarMotorista(Motorista motorista) {
-    String sql = "INSERT INTO motorista(nome, cpf, email, telefone, senha, idade, genero, qtd_corridas, avaliacao_media, numero_cnh, disponivel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO motorista(nome, cpf, email, telefone, senha, idade, genero, qtd_corridas_concluidas, avaliacao_media, numero_cnh, disponivel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     try (Connection conn = Conexao.getConnection();
          PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -66,7 +66,7 @@ public List<Motorista> listarMotoristas() {
                 rs.getInt("idade"),
                 rs.getInt("numero_cnh"), 
                 rs.getBoolean("disponivel"), 
-                rs.getInt("qtd_corridas"), 
+                rs.getInt("qtd_corridas_concluidas"), 
                 rs.getFloat("avaliacao_media") 
             );
             motoristas.add(m);
@@ -100,7 +100,7 @@ public List<Motorista> listarMotoristas() {
                 rs.getInt("idade"),
                 rs.getInt("numero_cnh"), 
                 rs.getBoolean("disponivel"), 
-                rs.getInt("qtd_corridas"), 
+                rs.getInt("qtd_corridas_concluidas"), 
                 rs.getFloat("avaliacao_media") 
                 );
             }
@@ -134,7 +134,7 @@ public List<Motorista> listarMotoristas() {
                 rs.getInt("idade"),
                 rs.getInt("numero_cnh"), 
                 rs.getBoolean("disponivel"), 
-                rs.getInt("qtd_corridas"), 
+                rs.getInt("qtd_corridas_concluidas"), 
                 rs.getFloat("avaliacao_media") 
                 );
             }
@@ -165,7 +165,7 @@ public List<Motorista> listarMotoristas() {
                     rs.getInt("idade"),
                     rs.getInt("numero_cnh"), 
                     rs.getBoolean("disponivel"), 
-                    rs.getInt("qtd_corridas"), 
+                    rs.getInt("qtd_corridas_concluidas"), 
                     rs.getFloat("avaliacao_media") 
                 );
             }
@@ -224,6 +224,20 @@ public List<Motorista> listarMotoristas() {
         try (Connection conn = Conexao.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, novoTelefone);
+            ps.setInt(2, id_motorista);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Erro ao alterar telefone: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean alterarSenha(String novaSenha, int id_motorista) {
+        String sql = "UPDATE motorista SET senha = ? WHERE id_motorista = ?";
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, novaSenha);
             ps.setInt(2, id_motorista);
             ps.executeUpdate();
             return true;

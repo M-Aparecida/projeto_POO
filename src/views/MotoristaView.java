@@ -5,12 +5,11 @@ import java.util.Scanner;
 
 import DAO.MotoristaDAO;
 import entity.Motorista;
-import entity.Passageiro;
 
 public class MotoristaView {
         static Scanner scanner = new Scanner(System.in);
 
-        public static void menuMotoristaLoginCadastro() {
+        public static void menuMotorista() {
         while (true) {
             limparTela();
             System.out.println("\n=== Menu Motorista ===");
@@ -22,25 +21,11 @@ public class MotoristaView {
             String opcao = scanner.nextLine();
             switch (opcao) {
                 case "1":
-                limparTela();
-                    System.out.println("=== Login Motorista ===");
-                    System.out.print("E-mail: ");
-                    String emailLogin = scanner.nextLine();
-                    System.out.print("Senha: ");
-                    String senhaLogin = scanner.nextLine();
-
-                    MotoristaDAO daoLogin = new MotoristaDAO();
-                    Motorista loginTemp = daoLogin.buscarMotoristaPorNome(emailLogin);
-
-                    if (loginTemp != null && loginTemp.login(emailLogin, senhaLogin)) {
-                        menuInicialMotorista(loginTemp.getDadosMotorista());
-                    } else {
-                        System.out.println("E-mail ou senha inválidos.");
-                    }
+                    menuLoginMotorista();                  
                     break;
                 case "2":
                     if (menuCadastroMotorista()) {
-                        menuMotoristaLoginCadastro();
+                        menuMotorista();
                     }else{
                         menuCadastroMotorista();
                     }                    
@@ -172,7 +157,6 @@ public static boolean menuCadastroMotorista(){
 
 
     public static void menuInicialMotorista(Motorista m) {
-        boolean mostrarMenu = true;
         while (true) {
             limparTela();
             System.out.println("\n=== Tela Inicial do Motorista ===");
