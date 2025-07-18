@@ -38,6 +38,7 @@ public class App {
                 mostrarMenu = true; 
                 break;
             case "2":
+                MotoristaView.menuMotorista();
                 mostrarMenu = true;
                 break;
             case "0":
