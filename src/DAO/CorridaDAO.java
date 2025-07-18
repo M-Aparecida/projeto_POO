@@ -1,133 +1,84 @@
-package entity;
+package DAO;
 
-public class Corrida {
-    private String origem;
-    private String destino;
-    private Integer idcorrida;
-    private Integer fatortransito;
-    private String preco;
-    private String data;
-    private String passageiro;
-    private String motorista;
-    private String veiculo;
-    private Integer passageiroId;
-    private Integer motoristaId;
-    private Integer veiculoId;
-    private Integer status; // 0 = disponível, 1 = em andamento, 2 = finalizada, 3 = cancelada
+import entity.Corrida;
+import java.util.ArrayList;
+import java.util.List;
 
-    public Corrida() {}
+public class CorridaDAO {
+    private List<Corrida> corridas = new ArrayList<>();
 
-    public Corrida(Integer idcorrida, String origem, String destino, Integer fatortransito, String preco, String data, String passageiro, String motorista, String veiculo, Integer passageiroId, Integer motoristaId, Integer veiculoId, Integer status) {
-        this.idcorrida = idcorrida;
-        this.origem = origem;
-        this.destino = destino;
-        this.fatortransito = fatortransito;
-        this.preco = preco;
-        this.data = data;
-        this.passageiro = passageiro;
-        this.motorista = motorista;
-        this.veiculo = veiculo;
-        this.passageiroId = passageiroId;
-        this.motoristaId = motoristaId;
-        this.veiculoId = veiculoId;
-        this.status = status;
-    }
-
-    public float calcularDistancia(String origem, String destino) {
-        // Lógica fictícia de cálculo
-        return origem.length() + destino.length();
-    }
-
-    public boolean modificarValoresCorrida(String origem, String destino, int fatorTransito, String preco) {
-        if (origem != null && destino != null && preco != null) {
-            this.origem = origem;
-            this.destino = destino;
-            this.fatortransito = fatorTransito;
-            this.preco = preco;
+    public boolean adicionarCorrida(Corrida corrida) {
+        if (corrida != null) {
+            corridas.add(corrida);
             return true;
         }
         return false;
     }
 
-    public boolean realizarCorrida(String origem, String destino) {
-        if (origem != null && destino != null) {
-            this.origem = origem;
-            this.destino = destino;
-            this.status = 1; // Corrida em andamento
-            return true;
+    public boolean atualizarCorrida(Corrida novaCorrida) {
+        for (int i = 0; i < corridas.size(); i++) {
+            if (corridas.get(i).getIdcorrida().equals(novaCorrida.getIdcorrida())) {
+                corridas.set(i, novaCorrida);
+                return true;
+            }
         }
         return false;
     }
 
-    public boolean terminarCorrida(Integer idCorrida) {
-        if (this.idcorrida.equals(idCorrida)) {
-            this.status = 2; // Finalizada
-            return true;
-        }
-        return false;
-    }
-
-    public boolean cancelarCorrida() {
-        this.status = 3; // Cancelada
-        return true;
-    }
-
-    public Corrida getDadosCorrida() {
-        return this;
-    }
-
-    public void listarCorridas() {
-        System.out.println(this.toString());
-    }
-
-    public void listarCorridas(String data1, String data2) {
-        if (this.data != null && this.data.compareTo(data1) >= 0 && this.data.compareTo(data2) <= 0) {
-            System.out.println(this.toString());
-        }
-    }
-
-    public void listarCorridasDisponiveis() {
-        if (this.status != null && this.status == 0) {
-            System.out.println(this.toString());
-        }
-    }
-
-    public void avaliarCorrida(Integer idCorrida) {
-        if (this.idcorrida.equals(idCorrida)) {
-            System.out.println("Corrida avaliada com sucesso.");
-        }
-    }
-
-    public void historicoDeCorridas(int cnh) {
-        if (this.motoristaId != null && this.motoristaId == cnh) {
-            System.out.println(this.toString());
-        }
-    }
-
-    public void historicoDeCorridas(String cpf) {
-        if (this.passageiro != null && this.passageiro.equals(cpf)) {
-            System.out.println(this.toString());
-        }
+    public boolean removerCorrida(Integer idCorrida) {
+        return corridas.removeIf(c -> c.getIdcorrida().equals(idCorrida));
     }
 
     public Corrida buscarCorrida(Integer idCorrida) {
-        if (this.idcorrida.equals(idCorrida)) {
-            return this;
+        for (Corrida c : corridas) {
+            if (c.getIdcorrida().equals(idCorrida)) {
+                return c;
+            }
         }
         return null;
     }
 
-    @Override
-    public String toString() {
-        return "Corrida{" +
-                "idcorrida=" + idcorrida +
-                ", origem='" + origem + '\'' +
-                ", destino='" + destino + '\'' +
-                ", data='" + data + '\'' +
-                ", preco='" + preco + '\'' +
-                ", status=" + status +
-                '}';
+    public List<Corrida> listarTodasCorridas() {
+        return new ArrayList<>(corridas);
     }
 
-    // Getters e Setters omitidos por brevidade
+    public List<Corrida> listarCorridasDisponiveis() {
+        List<Corrida> disponiveis = new ArrayList<>();
+        for (Corrida c : corridas) {
+            if (c.getStatus() != null && c.getStatus() == 0) {
+                disponiveis.add(c);
+            }
+        }
+        return disponiveis;
+    }
+
+    public List<Corrida> listarCorridasPorData(String data1, String data2) {
+        List<Corrida> resultado = new ArrayList<>();
+        for (Corrida c : corridas) {
+            if (c.getData() != null && c.getData().compareTo(data1) >= 0 && c.getData().compareTo(data2) <= 0) {
+                resultado.add(c);
+            }
+        }
+        return resultado;
+    }
+
+    public List<Corrida> historicoDeCorridasPorPassageiro(String cpf) {
+        List<Corrida> historico = new ArrayList<>();
+        for (Corrida c : corridas) {
+            if (c.getPassageiro() != null && c.getPassageiro().equals(cpf)) {
+                historico.add(c);
+            }
+        }
+        return historico;
+    }
+
+    public List<Corrida> historicoDeCorridasPorMotorista(int cnh) {
+        List<Corrida> historico = new ArrayList<>();
+        for (Corrida c : corridas) {
+            if (c.getMotoristaId() != null && c.getMotoristaId() == cnh) {
+                historico.add(c);
+            }
+        }
+        return historico;
+    }
 }
