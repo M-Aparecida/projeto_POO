@@ -80,11 +80,13 @@ public List<Motorista> listarMotoristas() {
 }
 
  public Motorista buscarMotoristaPorNome(String nome) {
-        String sql = "SELECT * FROM motorista WHERE nome = ?";
+        String sql = "SELECT * FROM motorista WHERE nome ILIKE ?";
 
         try (Connection conn = Conexao.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, nome);
+
+            ps.setString(1, "%" + nome + "%"); 
 
             ResultSet rs = ps.executeQuery();
 
@@ -106,7 +108,7 @@ public List<Motorista> listarMotoristas() {
             }
 
         } catch (SQLException e) {
-            System.out.println("Erro ao buscar passageiro por nome: " + e.getMessage());
+            System.out.println("Erro ao buscar motorista por nome: " + e.getMessage());
         }
 
         return null;
@@ -114,12 +116,14 @@ public List<Motorista> listarMotoristas() {
 
 
     public Motorista buscarPorEmail(String email) {
-        String sql = "SELECT * FROM motorista WHERE email = ?";
+        String sql = "SELECT * FROM motorista WHERE email ILIKE  ?";
+
 
         try (Connection conn = Conexao.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)) {
             
-            ps.setString(1, email);
+            ps.setString(1, "%" + email + "%"); 
+
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -139,7 +143,7 @@ public List<Motorista> listarMotoristas() {
                 );
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao buscar passageiro por e-mail: " + e.getMessage());
+            System.out.println("Erro ao buscar motorista por e-mail: " + e.getMessage());
         }
         return null;
     }
@@ -171,7 +175,7 @@ public List<Motorista> listarMotoristas() {
             }
 
         } catch (SQLException e) {
-            System.out.println("Erro ao buscar passageiro por ID: " + e.getMessage());
+            System.out.println("Erro ao buscar motorista por ID: " + e.getMessage());
         }
 
         return null;
@@ -246,6 +250,40 @@ public List<Motorista> listarMotoristas() {
             return false;
         }
     }
+
+ public void updateAvaliacao(float avaliacao, int id_motorista){
+        String sqlQtdCorridas = "SELECT qtd_corridas_concluidas, avaliacao_media FROM motorista WHERE id_motorista = ?";
+        int qtdCorridas = 0;
+        float avaliacaoMedia = 0;
+        float novaAvalicaoMedia = 0;
+        
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sqlQtdCorridas)) {
+            ps.setInt(1, id_motorista);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            qtdCorridas = rs.getInt("qtd_corridas_concluidas");
+            avaliacaoMedia = rs.getFloat("avaliacao_media");
+        } catch (SQLException e) {
+            System.out.println("Erro ao consultar qtd_corridas_concluidas e avaliacao_media: " + e.getMessage());
+        }
+        
+        novaAvalicaoMedia = ((avaliacaoMedia * qtdCorridas) + avaliacao)/ (qtdCorridas+1);
+    
+        String sql = "UPDATE motorista SET avaliacao_media = ?, qtd_corridas_concluidas = qtd_corridas_concluidas+1 WHERE id_motorista = ?";
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setFloat(1, novaAvalicaoMedia);
+            ps.setInt(2, id_motorista);
+            ps.executeUpdate(); 
+        } catch (SQLException e) {
+            System.out.println("Erro ao alterar a avalição média: " + e.getMessage());
+        }
+    }
+
+
+
+
 }
 
 
