@@ -1,8 +1,11 @@
 package entity;
 
+import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Scanner;
 
 import DAO.MotoristaDAO;
+import DAO.PassageiroDAO;
 
 public class Motorista extends Pessoa {
     private long numeroCnh;
@@ -106,11 +109,6 @@ public class Motorista extends Pessoa {
         }
     }
 
-   // public boolean modificarValoresMotorista(){
-
-   // }
-
-
     public boolean aceitarCorrida(int corridaID) {
         if (!disponivel) {
             return false;
@@ -118,9 +116,9 @@ public class Motorista extends Pessoa {
         this.disponivel = false;
         return true;
     }
-public static Motorista buscarMotorista(String nome){
+public static Motorista buscarMotorista(String email){
         MotoristaDAO dao = new MotoristaDAO();
-        Motorista m = dao.buscarPorEmail(nome);
+        Motorista m = dao.buscarPorEmail(email);
         return m;
     }
     public boolean modificarValoresMotorista(String op, String novaInformacao){
@@ -138,5 +136,29 @@ public static Motorista buscarMotorista(String nome){
                 System.out.println("Opção inválida.");
                 return false;
         }
+    }
+
+    public static void avaliarMotorista(int idMotorista){
+        Scanner ent = new Scanner(System.in);
+        float avaliacao = 0;
+        MotoristaDAO dao = new MotoristaDAO();
+        
+        do{
+            try {
+                System.out.print("Insira sua nota para o motorista de 0-5: ");
+                avaliacao = ent.nextFloat();
+                if(avaliacao >= 0 && avaliacao <= 5){
+                    dao.updateAvaliacao(avaliacao, idMotorista); 
+                    break;  
+                }else{
+                    System.out.println("insira um valor de 0-5");
+                    continue;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("O valor deve ser um inteiro");   
+                ent.nextLine();
+            }
+        }while(true);
+        ent.close();
     }
 }
