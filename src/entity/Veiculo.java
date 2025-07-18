@@ -1,5 +1,6 @@
 package entity;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import DAO.VeiculoDAO;
 
@@ -98,7 +99,22 @@ public class Veiculo{
         Veiculo.quantidadeVeiculos = quantidadeVeiculos;
     }
 
+    public boolean modificarValoresVeiculo(String novoModelo, int novaCapacidade) {
+        VeiculoDAO dao = new VeiculoDAO();
+        boolean sucesso = dao.modificarValoresVeiculo(this.placa, this.modelo, novoModelo, novaCapacidade);
+        if (sucesso) {
+            this.modelo = novoModelo;
+            this.capacidade = novaCapacidade;
+        }
+        return sucesso;
+    }
+
+
+   
 }
+
+
+
 
   
     
