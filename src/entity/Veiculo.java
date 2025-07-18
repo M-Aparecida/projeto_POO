@@ -12,9 +12,10 @@ public class Veiculo{
     private int capacidade;
     private boolean estaEmUso;
     private static int quantidadeVeiculos;
+    private int id_motorista;
 
 
-    public Veiculo(int idVeiculo, String placa, String modelo, int ano, int capacidade) throws IllegalArgumentException {
+    public Veiculo(int idVeiculo, String placa, String modelo, int ano, int capacidade, int id_motorista) throws IllegalArgumentException {
         if (placa == null || modelo == null || ano <= 0) {
             throw new IllegalArgumentException("Dados inválidos para criação do veículo.");
         }
@@ -23,6 +24,7 @@ public class Veiculo{
         this.modelo = modelo;
         this.ano = ano;
         this.estaEmUso = false;
+        this.id_motorista = id_motorista;
 
         VeiculoDAO dao = new VeiculoDAO();
         quantidadeVeiculos = dao.qtd_veiculos();
@@ -99,6 +101,17 @@ public class Veiculo{
         Veiculo.quantidadeVeiculos = quantidadeVeiculos;
     }
 
+      public int getId_motorista() {
+        return id_motorista;
+    }
+
+
+    public void setId_motorista(int id_motorista) {
+        this.id_motorista = id_motorista;
+    }
+
+    
+
     public boolean modificarValoresVeiculo(String novoModelo, int novaCapacidade) {
         VeiculoDAO dao = new VeiculoDAO();
         boolean sucesso = dao.modificarValoresVeiculo(this.placa, this.modelo, novoModelo, novaCapacidade);
@@ -136,6 +149,7 @@ public class Veiculo{
         Veiculo v = dao.buscarPorModeloEAno(modelo, ano);
         return (v != null && !v.isEstaEmUso()) ? v : null;
     }
+
 
 }
 
