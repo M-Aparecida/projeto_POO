@@ -5,6 +5,11 @@ import java.util.Scanner;
 
 import DAO.MotoristaDAO;
 import entity.Motorista;
+import entity.Passageiro;
+import DAO.PassageiroDAO; 
+import views.PassageiroView;   
+import entity.Pessoa;   
+
 
 public class MotoristaView {
         static Scanner scanner = new Scanner(System.in);
@@ -40,40 +45,41 @@ public class MotoristaView {
 
     }
     public static void menuLoginMotorista() {
-        while (true) {
-            limparTela();
-            System.out.println("=== Login Motorista ===");
+    MotoristaDAO dao = new MotoristaDAO(); 
 
-            String emailLogin;
-            System.out.print("E-mail: ");
-            do {
-                emailLogin = scanner.nextLine();
-                if (emailLogin.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
-                    break;
-                } else {
-                    System.out.print("Formato do email inválido, tente novamente: ");
-                }
-            } while (true);
+    while (true) {
+        System.out.println("=== Login Motorista ===");
 
-            System.out.print("Senha: ");
-            String senhaLogin = scanner.nextLine();
-
-            Motorista loginTemp = Motorista.buscarMotorista(emailLogin);
-
-            if (loginTemp != null && loginTemp.login(emailLogin, senhaLogin)) {
-                menuInicialMotorista(loginTemp.getDadosMotorista());
+        String emailLogin;
+        System.out.print("E-mail: ");
+        do {
+            emailLogin = scanner.nextLine();
+            if (emailLogin.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
                 break;
             } else {
-                System.out.println("E-mail ou senha inválidos, tente novamente.");
-                esperar(2);
+                System.out.print("Formato do email inválido, tente novamente: ");
             }
+        } while (true);
+
+        System.out.print("Senha: ");
+        String senhaLogin = scanner.nextLine();
+
+        Motorista loginTemp = dao.buscarPorEmail(emailLogin);
+
+        if (loginTemp != null && loginTemp.getSenha().equals(senhaLogin)) {
+            menuInicialMotorista(loginTemp); 
+            break;
+        } else {
+            System.out.println("E-mail ou senha inválidos, tente novamente.");
+            esperar(2);
         }
     }
+}
+
 
 public static boolean menuCadastroMotorista(){
         Motorista motorista = new Motorista();
 
-        limparTela();
         System.out.print("Insira o seu nome: ");
         motorista.setNome(scanner.nextLine());
         limparTela();
@@ -161,13 +167,15 @@ public static boolean menuCadastroMotorista(){
     public static void menuInicialMotorista(Motorista m) {
         boolean mostrarMenu = true;
         while (true) {
-            limparTela();
             System.out.println("\n=== Tela Inicial do Motorista ===");
             System.out.println("1. Editar Cadastro");
-            System.out.println("2. Listar Histórico de Corridas");
-            System.out.println("3. Área da Corrida");
-            System.out.println("4. Relatório de Faturamento");
-            System.out.println("5. Área de Veículo");
+            System.out.println("2. Listar Motoristas");
+            System.out.println("3. Listar Histórico de Corridas");
+            System.out.println("4. Buscar Motorista por email");
+            System.out.println("5. Área da Corrida");
+            System.out.println("6. Relatório de Faturamento");
+            System.out.println("7. Área de Veículo");
+            System.out.println("8. Avaliar Passageiro");
             System.out.println("0. Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             String opcao = scanner.nextLine();
@@ -178,15 +186,27 @@ public static boolean menuCadastroMotorista(){
                 mostrarMenu = true;
                     break;
                 case "2":
+                Motorista.listarMotoristas();
+                mostrarMenu = true;
                     break;
                 case "3":
-                    CorridaView.menuAreaCorrida(m);
                     break;
                 case "4":
+                menuBuscarMotorista(m);
+                mostrarMenu = true;
                     break;
                 case "5":
                     break;
+                 case "6":
+                    break;
+                case "7": 
+                    break;
+                case "8":
+                 menuAvaliaPassageiro();
+                    mostrarMenu = true;
+                    break;
                 case "0":
+
                     return;
                 default:
                     System.out.println("Opção inválida!");
@@ -210,7 +230,6 @@ public static boolean menuCadastroMotorista(){
 
      public static void menuRelatorioFaturamento() {
         while (true) {
-            limparTela();
             System.out.println("\n=== Relatório de Faturamento ===");
             System.out.println("1. Todo o período");
             System.out.println("2. Período específico");
@@ -226,7 +245,6 @@ public static boolean menuCadastroMotorista(){
     public static void menuEditarCadastroMotorista(Motorista m) {
         boolean mostrarMenu = true;
         while (mostrarMenu) {
-            limparTela();
             System.out.println("\n=== Editar Cadastro Motorista ===");
             System.out.println("1. Editar Nome");
             System.out.println("2. Editar Email");
@@ -294,7 +312,40 @@ public static boolean menuCadastroMotorista(){
                 default:
                     System.out.println("Opção inválida!");
                     mostrarMenu = false;               
+                }
             }
         }
-}
+    
+
+        public static void menuBuscarMotorista(Motorista M) {
+        System.out.println("\n=== Buscar Motorista ===");
+        System.out.print("Insira o email do motorista: ");
+        String em = scanner.nextLine();
+        Motorista motorista = Motorista.buscarMotorista(em);
+        if (motorista != null) {
+            System.out.println("Motorista encontrado: " + motorista.getNome());
+            System.out.println("Email: " + motorista.getEmail());
+            System.out.println("Telefone: " + motorista.getTelefone());
+            System.out.println("Gênero: " + motorista.getGenero());
+            System.out.println("Idade: " + motorista.getIdade());
+            System.out.println("CNH: " + motorista.getNumeroCnh());
+        } else {
+            System.out.println("Motorista não encontrado.");
+        }
+    }
+
+    public static void menuAvaliaPassageiro() {
+        System.out.println("\n=== Avaliar Passageiro ===");
+        System.out.print("Insira o ID do passageiro: ");
+        int idPassageiro = scanner.nextInt();
+        scanner.nextLine(); 
+
+        PassageiroDAO dao = new PassageiroDAO();
+        if (dao.buscarPorId(idPassageiro) != null) {
+            Passageiro.avaliarPassageiro(idPassageiro);
+            System.out.println("Avaliação enviada com sucesso!");
+        } else {
+            System.out.println("Passageiro não encontrado.");
+        }
+    }
 }
