@@ -10,7 +10,6 @@ import java.util.List;
 import java.sql.Statement;
 import conexao.Conexao;
 import entity.Motorista;
-import entity.Passageiro;
 public class MotoristaDAO{
  public boolean cadastrarMotorista(Motorista motorista) {
     String sql = "INSERT INTO motorista(nome, cpf, email, telefone, senha, idade, genero, qtd_corridas, avaliacao_media, numero_cnh, disponivel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -114,7 +113,7 @@ public List<Motorista> listarMotoristas() {
     }
 
 
-    public Passageiro buscarPorEmail(String email) {
+    public Motorista buscarPorEmail(String email) {
         String sql = "SELECT * FROM motorista WHERE email = ?";
 
         try (Connection conn = Conexao.getConnection();
@@ -124,18 +123,19 @@ public List<Motorista> listarMotoristas() {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                return new Passageiro(
-                    rs.getString("nome"),
-                    rs.getString("cpf"),
-                    rs.getString("email"),
-                    rs.getString("telefone"),
-                    rs.getString("senha"),
-                    rs.getString("genero"),
-                    rs.getInt("id_passageiro"),
-                    rs.getString("cartao_dados"),
-                    rs.getInt("qtd_corridas"),
-                    rs.getInt("avaliacao_media"),
-                    rs.getInt("idade")
+                return new Motorista(
+                rs.getInt("id_motorista"),
+                rs.getString("nome"), 
+                rs.getString("cpf"), 
+                rs.getString("email"), 
+                rs.getString("telefone"), 
+                rs.getString("senha"), 
+                rs.getString("genero"),      
+                rs.getInt("idade"),
+                rs.getInt("numero_cnh"), 
+                rs.getBoolean("disponivel"), 
+                rs.getInt("qtd_corridas"), 
+                rs.getFloat("avaliacao_media") 
                 );
             }
         } catch (SQLException e) {
@@ -143,7 +143,95 @@ public List<Motorista> listarMotoristas() {
         }
         return null;
     }
+
+    public Motorista buscarPorId(int id) {
+        String sql = "SELECT * FROM motorista WHERE id_motorista = ?";
+
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Motorista(
+                    rs.getInt("id_motorista"),
+                    rs.getString("nome"), 
+                    rs.getString("cpf"), 
+                    rs.getString("email"), 
+                    rs.getString("telefone"), 
+                    rs.getString("senha"), 
+                    rs.getString("genero"),      
+                    rs.getInt("idade"),
+                    rs.getInt("numero_cnh"), 
+                    rs.getBoolean("disponivel"), 
+                    rs.getInt("qtd_corridas"), 
+                    rs.getFloat("avaliacao_media") 
+                );
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar passageiro por ID: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public boolean alterarNome(String novoNome, int id_motorista){
+        String sql = "UPDATE motorista SET nome = ? where id_motorista = ?";
+         
+        try(Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+                ps.setString(1, novoNome);
+                ps.setInt(2, id_motorista);
+                ps.executeUpdate();
+                return true;
+        }catch (SQLException e) {
+            System.out.println("Erro ao alterar nome" + e.getMessage());
+            return false;
+        }
+    }
+     public boolean alterarCpf(String novoCpf, int id_motorista) {
+        String sql = "UPDATE motorista SET cpf = ? WHERE id_motorista = ?";
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, novoCpf);
+            ps.setInt(2, id_motorista);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Erro ao alterar CPF: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean alterarEmail(String novoEmail, int id_motorista) {
+        String sql = "UPDATE motorista SET email = ? WHERE id_motorista = ?";
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, novoEmail);
+            ps.setInt(2, id_motorista);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Erro ao alterar e-mail: " + e.getMessage());
+            return false;
+        }
+    }
     
+    public boolean alterarTelefone(String novoTelefone, int id_motorista) {
+        String sql = "UPDATE motorista SET telefone = ? WHERE id_motorista = ?";
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, novoTelefone);
+            ps.setInt(2, id_motorista);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Erro ao alterar telefone: " + e.getMessage());
+            return false;
+        }
+    }
 }
 
 
