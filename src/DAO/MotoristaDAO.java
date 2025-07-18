@@ -64,7 +64,7 @@ public List<Motorista> listarMotoristas() {
                 rs.getString("senha"), 
                 rs.getString("genero"),      
                 rs.getInt("idade"),
-                rs.getInt("numero_cnh"), 
+                rs.getLong("numero_cnh"), 
                 rs.getBoolean("disponivel"), 
                 rs.getInt("qtd_corridas_concluidas"), 
                 rs.getFloat("avaliacao_media") 
@@ -98,7 +98,7 @@ public List<Motorista> listarMotoristas() {
                 rs.getString("senha"), 
                 rs.getString("genero"),      
                 rs.getInt("idade"),
-                rs.getInt("numero_cnh"), 
+                rs.getLong("numero_cnh"), 
                 rs.getBoolean("disponivel"), 
                 rs.getInt("qtd_corridas_concluidas"), 
                 rs.getFloat("avaliacao_media") 
@@ -132,7 +132,7 @@ public List<Motorista> listarMotoristas() {
                 rs.getString("senha"), 
                 rs.getString("genero"),      
                 rs.getInt("idade"),
-                rs.getInt("numero_cnh"), 
+                rs.getLong("numero_cnh"), 
                 rs.getBoolean("disponivel"), 
                 rs.getInt("qtd_corridas_concluidas"), 
                 rs.getFloat("avaliacao_media") 
@@ -163,7 +163,7 @@ public List<Motorista> listarMotoristas() {
                     rs.getString("senha"), 
                     rs.getString("genero"),      
                     rs.getInt("idade"),
-                    rs.getInt("numero_cnh"), 
+                    rs.getLong("numero_cnh"), 
                     rs.getBoolean("disponivel"), 
                     rs.getInt("qtd_corridas_concluidas"), 
                     rs.getFloat("avaliacao_media") 

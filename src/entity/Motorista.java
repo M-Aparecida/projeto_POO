@@ -139,7 +139,4 @@ public static Motorista buscarMotorista(String nome){
                 return false;
         }
     }
-
-
-    
 }

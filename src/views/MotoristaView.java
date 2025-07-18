@@ -10,6 +10,9 @@ public class MotoristaView {
         static Scanner scanner = new Scanner(System.in);
 
         public static void menuMotorista() {
+        boolean mostrarMenu = true;    
+        Motorista m = new Motorista();               
+
         while (true) {
             limparTela();
             System.out.println("\n=== Menu Motorista ===");
@@ -25,10 +28,9 @@ public class MotoristaView {
                     break;
                 case "2":
                     if (menuCadastroMotorista()) {
-                        menuMotorista();
-                    }else{
-                        menuCadastroMotorista();
-                    }                    
+                        menuInicialMotorista(m.getDadosMotorista());
+                    }
+                    mostrarMenu = true;                   
                 case "0":
                     return;
                 default:
@@ -157,6 +159,7 @@ public static boolean menuCadastroMotorista(){
 
 
     public static void menuInicialMotorista(Motorista m) {
+        boolean mostrarMenu = true;
         while (true) {
             limparTela();
             System.out.println("\n=== Tela Inicial do Motorista ===");
@@ -171,6 +174,8 @@ public static boolean menuCadastroMotorista(){
 
             switch (opcao) {
                 case "1":
+                menuEditarCadastroMotorista(m);
+                mostrarMenu = true;
                     break;
                 case "2":
                     break;
@@ -216,4 +221,79 @@ public static boolean menuCadastroMotorista(){
             System.out.println("Função de relatório não implementada ainda.");
         }
     }
+
+    public static void menuEditarCadastroMotorista(Motorista m) {
+        boolean mostrarMenu = true;
+        while (mostrarMenu) {
+            limparTela();
+            System.out.println("\n=== Editar Cadastro Motorista ===");
+            System.out.println("1. Editar Nome");
+            System.out.println("2. Editar Email");
+            System.out.println("3. Editar Telefone");
+            System.out.println("4. Editar Senha");
+            System.out.println("0. Voltar");
+            System.out.print("Escolha uma opção: ");
+            String opcao = scanner.nextLine();
+
+            switch (opcao) {
+                case "1":
+                System.out.println("\n=== Editar nome ===");
+                    System.out.print("Insira o novo nome: ");
+                    String novoNome = scanner.nextLine();
+                    if (m.modificarValoresMotorista("nome", novoNome)) {
+                        m.setNome(novoNome);
+                        System.out.println("Nome alterado com sucesso!");
+                    } else {
+                        System.out.println("Falha ao alterar nome.");
+                    }
+                    esperar(1);
+                    mostrarMenu = true;
+                    break;
+                case "2":
+                System.out.println("\n=== Editar E-mail ===");
+                    System.out.print("Insira o novo e-mail: ");
+                    String novoEmail = scanner.nextLine();
+                    if (novoEmail.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+                        m.modificarValoresMotorista("email", novoEmail);
+                        m.setEmail(novoEmail);
+                        System.out.println("E-mail alterado com sucesso!");
+                    } else {
+                        System.out.println("E-mail inválido.");
+                    }
+                    esperar(1);
+                    mostrarMenu = true;
+                    break;
+                case "3":
+                System.out.println("\n=== Editar Telefone ===");
+                    System.out.print("Insira o novo telefone ((xx) xxxxx-xxxx): ");
+                    String novoTelefone = scanner.nextLine();
+                    if (novoTelefone.matches("\\(\\d{2}\\) \\d{5}-\\d{4}")) {
+                        m.modificarValoresMotorista("telefone", novoTelefone);
+                        m.setTelefone(novoTelefone);
+                        System.out.println("Telefone alterado com sucesso!");
+                    } else {
+                        System.out.println("Telefone inválido.");
+                    }
+                    esperar(1);
+                    mostrarMenu = true;
+                    break;
+                case "4":
+                System.out.println("\n=== Editar Senha ===");
+                    System.out.print("Insira a nova senha: ");
+                    String novaSenha = scanner.nextLine();
+                    if (m.modificarValoresMotorista("senha", novaSenha)) {
+                        m.setSenha(novaSenha);
+                        System.out.println("Senha alterada com sucesso!");
+                    } else {
+                        System.out.println("Falha ao alterar senha.");
+                    }
+                    esperar(1);
+                    mostrarMenu = true;
+                    break;
+                default:
+                    System.out.println("Opção inválida!");
+                    mostrarMenu = false;               
+            }
+        }
+}
 }
