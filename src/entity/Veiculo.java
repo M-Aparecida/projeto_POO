@@ -109,7 +109,21 @@ public class Veiculo{
         return sucesso;
     }
 
+     public boolean deletarVeiculo() {
+        VeiculoDAO dao = new VeiculoDAO();
+        return dao.deletarVeiculo(this.placa);
+    }
 
+    public Veiculo getDadosVeiculo() {
+        return this;
+    }
+
+    public static List<Veiculo> listarVeiculos() {
+        VeiculoDAO dao = new VeiculoDAO();
+        return dao.listarVeiculos().stream()
+            .filter(v -> !v.isEstaEmUso())
+            .collect(Collectors.toList());
+    }
    
 }
 
