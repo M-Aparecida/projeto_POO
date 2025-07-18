@@ -182,8 +182,4 @@ public class VeiculoView {
         scanner.nextLine();
     }
 
-    public static void main(String[] args) {
-        menuVeiculo();
-        System.out.println("Encerrando teste da ViewVeiculo.");
-    }
 }
