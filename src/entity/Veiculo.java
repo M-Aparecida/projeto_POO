@@ -124,7 +124,19 @@ public class Veiculo{
             .filter(v -> !v.isEstaEmUso())
             .collect(Collectors.toList());
     }
-   
+
+    public static Veiculo buscar(String placa) {
+        VeiculoDAO dao = new VeiculoDAO();
+        Veiculo v = dao.buscarPorPlaca(placa);
+        return (v != null && !v.isEstaEmUso()) ? v : null;
+    }
+
+    public static Veiculo buscar(String modelo, int ano) {
+        VeiculoDAO dao = new VeiculoDAO();
+        Veiculo v = dao.buscarPorModeloEAno(modelo, ano);
+        return (v != null && !v.isEstaEmUso()) ? v : null;
+    }
+
 }
 
 
