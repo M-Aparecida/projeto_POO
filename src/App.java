@@ -51,58 +51,11 @@ public class App {
     }
 }
 
-    public static void menuHistoricoCorridas() {
-        while (true) {
-            limparTela();
-            System.out.println("\n=== Histórico de Corridas ===");
-            System.out.println("1. Ver todo o período");
-            System.out.println("2. Ver período específico");
-            System.out.println("0. Voltar");
-            System.out.print("Escolha uma opção: ");
-            String opcao = scanner.nextLine();
-
-            if (opcao.equals("0")) return;
-            System.out.println("Função de histórico não implementada ainda.");
-        }
-    }
-
-    public static void menuAreaCorrida() {
-        while (true) {
-            limparTela();
-            System.out.println("\n=== Área da Corrida ===");
-            System.out.println("Status da corrida: [aqui mostraria o status atual]");
-            System.out.println("1. Cancelar Corrida");
-            System.out.println("0. Voltar");
-            System.out.print("Escolha uma opção: ");
-            String opcao = scanner.nextLine();
-
-            if (opcao.equals("0")) return;
-            System.out.println("Função de cancelamento não implementada ainda.");
-        }
-    }
-   
-    public static void menuAreaVeiculo() {
-        while (true) {
-            limparTela();
-            System.out.println("\n=== Área de Veículo ===");
-            System.out.println("1. Cadastrar novo veículo");
-            System.out.println("2. Apagar veículo");
-            System.out.println("0. Voltar");
-            System.out.print("Escolha uma opção: ");
-            String opcao = scanner.nextLine();
-
-            if (opcao.equals("0")) return;
-            System.out.println("Função de veículo não implementada ainda.");
-        }
-    }
-
     public static void limparTela() {
         for (int i = 0; i < 50; i++) {
             System.out.println();
         }
     }
-    
-    
 
 }
 

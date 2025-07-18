@@ -11,6 +11,7 @@ import conexao.Conexao;
 import entity.Veiculo;
 
 public class VeiculoDAO {
+
     public List<Veiculo> listarVeiculos(){
         String sql = "SELECT * FROM veiculo";
 
@@ -21,12 +22,11 @@ public class VeiculoDAO {
                 ResultSet rs = ps.executeQuery();
 
                 while (rs.next()) {
-                    Veiculo v = new Veiculo(rs.getInt("id_veiculo"), rs.getString("placa"), rs.getString("modelo"), rs.getInt("ano"), rs.getInt("capacidade"));
-
+                    Veiculo v = new Veiculo(rs.getInt("id_veiculo"), rs.getString("placa"), rs.getString("modelo"), rs.getInt("ano"), rs.getInt("capacidade"), rs.getInt("id_veiculo"));
                     veiculos.add(v);
                 }
         }catch (SQLException e) {
-            System.out.println("erro ao buscar veículos" + e.getMessage());
+            System.out.println("erro ao buscar veículos: " + e.getMessage());
         }
 
         return veiculos;
@@ -45,10 +45,99 @@ public class VeiculoDAO {
                 return qtd_veiculos;
 
         }catch (SQLException e) {
-            System.out.println("erro ao contar veículos" + e.getMessage());
+            System.out.println("erro ao contar veículos: " + e.getMessage());
             return -1;
         }
+    }
 
+    public boolean modificarValoresVeiculo(String placa, String modelo, String novoModelo, int capacidade){
+        String sql = "UPDATE veiculo SET modelo = ?, capacidade = ? WHERE placa = ? AND modelo = ?";
+        
+        try(Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, novoModelo);
+            ps.setInt(2, capacidade);
+            ps.setString(3, placa);
+            ps.setString(4, modelo);
+
+            int linhasAfetadas = ps.executeUpdate();
+            return linhasAfetadas > 0;
+
+        } catch (SQLException e) {
+            System.out.println("erro ao modificar veículo: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean deletarVeiculo(String placa){
+        String sql = "DELETE FROM veiculo WHERE placa = ?";
+        
+        try(Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, placa);
+            int linhasAfetadas = ps.executeUpdate();
+            return linhasAfetadas > 0;
+        } catch (SQLException e) {
+            System.out.println("erro ao deletar veículo: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public Veiculo buscarPorPlaca(String placa){
+        String sql = "SELECT * FROM veiculo WHERE placa = ?";
+
+        try(Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, placa);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Veiculo(rs.getInt("id_veiculo"), rs.getString("placa"), rs.getString("modelo"), rs.getInt("ano"), rs.getInt("capacidade"), rs.getInt("id_motorista"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("erro ao buscar veículo por placa: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public Veiculo buscarPorModeloEAno(String modelo, int ano){
+        String sql = "SELECT * FROM veiculo WHERE modelo = ? AND ano = ?";
+
+        try(Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, modelo);
+            ps.setInt(2, ano);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Veiculo(rs.getInt("id_veiculo"), rs.getString("placa"), rs.getString("modelo"), rs.getInt("ano"), rs.getInt("capacidade"), rs.getInt("id_motorista"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("erro ao buscar veículo por modelo e ano: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public Veiculo getDadosVeiculo(int id){
+        String sql = "SELECT * FROM veiculo WHERE id_veiculo = ?";
+
+        try(Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Veiculo(rs.getInt("id_veiculo"), rs.getString("placa"), rs.getString("modelo"), rs.getInt("ano"), rs.getInt("capacidade"), rs.getInt("id_motorista"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("erro ao obter dados do veículo: " + e.getMessage());
+        }
+
+        return null;
     }
 }
-
