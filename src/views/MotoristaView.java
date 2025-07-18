@@ -180,6 +180,7 @@ public static boolean menuCadastroMotorista(){
                 case "2":
                     break;
                 case "3":
+                    CorridaView.menuAreaCorrida(m);
                     break;
                 case "4":
                     break;

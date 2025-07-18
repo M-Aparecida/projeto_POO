@@ -155,7 +155,7 @@ public class PassageiroView {
                 limparTela();
                 System.out.println("\n=== Tela Inicial do Passageiro ===");
                 System.out.println("1. Editar Cadastro");
-                System.out.println("2. Procurar Corrida");
+                System.out.println("2. Solicitar Corrida");
                 System.out.println("3. Listar Histórico de Corridas");
                 System.out.println("4. Área da Corrida");
                 System.out.println("0. Voltar ao Menu Principal");
@@ -169,6 +169,7 @@ public class PassageiroView {
                     mostrarMenu = true;
                     break;
                 case "2":
+                    CorridaView.solicitarNovaCorrida(p);
                     mostrarMenu = true;
                     break;
                 case "3":
