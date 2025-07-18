@@ -38,7 +38,15 @@ public class Motorista extends Pessoa {
         this.setAvaliacaoMedia(0.0f); 
     }
     
-    
+    public Motorista getDadosMotorista() {
+        if (this.idMotorista == 0) {
+            System.out.println("Passageiro sem ID definido.");
+            return null;
+        }
+
+        MotoristaDAO dao = new MotoristaDAO();
+        return dao.buscarPorId(this.idMotorista);
+    }
     public long getNumeroCnh() {
         return numeroCnh;
     }
@@ -111,7 +119,11 @@ public class Motorista extends Pessoa {
         this.disponivel = false;
         return true;
     }
-
+public static Motorista buscarMotorista(String email){
+        MotoristaDAO dao = new MotoristaDAO();
+        Motorista m = dao.buscarPorEmail(email);
+        return m;
+    }
     public boolean modificarValoresMotorista(String nome, String email, String senha, long numeroCnh){
         return false;
     }
