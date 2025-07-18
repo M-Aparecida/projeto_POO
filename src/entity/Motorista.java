@@ -159,6 +159,5 @@ public static Motorista buscarMotorista(String email){
                 ent.nextLine();
             }
         }while(true);
-        ent.close();
     }
 }

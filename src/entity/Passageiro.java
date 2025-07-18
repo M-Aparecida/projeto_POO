@@ -121,7 +121,7 @@ public class Passageiro extends Pessoa {
                 ent.nextLine();
             }
         }while(true);
-        ent.close();
+
     }
 
     public int getIdPassageiro() {
