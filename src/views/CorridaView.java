@@ -1,177 +1,183 @@
-package view;
+package views;
 
-import DAO.CorridaDAO;
-import entity.Corrida;
-
-import java.util.List;
 import java.util.Scanner;
+import entity.Corrida;
+import entity.Motorista;
+import entity.Passageiro;
 
 public class CorridaView {
+    private static Scanner scanner = new Scanner(System.in);
 
-    private CorridaDAO corridaDAO;
-    private Scanner scanner;
+    public static void menuAreaCorrida(Motorista motoristaLogado) {
+        if (motoristaLogado == null) {
+            System.out.println("Erro: Nenhum motorista logado. Voltando ao menu principal.");
+            esperar(2);
+            return;
+        }
 
-    public CorridaView() {
-        this.corridaDAO = new CorridaDAO();
-        this.scanner = new Scanner(System.in);
-    }
-
-    public void menuCorridas() {
-        int opcao;
-        do {
-            System.out.println("\n=== Menu Corridas ===");
-            System.out.println("1. Cadastrar nova corrida");
-            System.out.println("2. Listar todas as corridas");
-            System.out.println("3. Buscar corrida por ID");
-            System.out.println("4. Cancelar corrida");
-            System.out.println("5. Finalizar corrida");
-            System.out.println("6. Avaliar corrida");
-            System.out.println("7. Listar corridas disponíveis");
-            System.out.println("8. Listar corridas entre datas");
-            System.out.println("9. Histórico por CPF do passageiro");
-            System.out.println("10. Histórico por CNH do motorista");
+        while (true) {
+            limparTela();
+            System.out.println("\n=== Área da Corrida ===");
+            System.out.println("Motorista: " + motoristaLogado.getNome());
+            System.out.println("Status: " + (motoristaLogado.isDisponivel() ? "Disponível" : "Em corrida"));
+            System.out.println("---------------------------------");
+            System.out.println("1. Ver Corridas Disponíveis");
+            System.out.println("2. Aceitar uma Corrida");
+            System.out.println("3. Finalizar Corrida Atual");
+            System.out.println("4. Ver Meu Histórico de Corridas");
             System.out.println("0. Voltar");
-            System.out.print("Escolha: ");
-            opcao = scanner.nextInt();
-            scanner.nextLine();
+            System.out.print("Escolha uma opção: ");
+
+            String opcao = scanner.nextLine();
 
             switch (opcao) {
-                case 1 -> cadastrarCorrida();
-                case 2 -> listarTodas();
-                case 3 -> buscarPorId();
-                case 4 -> cancelarCorrida();
-                case 5 -> finalizarCorrida();
-                case 6 -> avaliarCorrida();
-                case 7 -> listarDisponiveis();
-                case 8 -> listarEntreDatas();
-                case 9 -> historicoPorPassageiro();
-                case 10 -> historicoPorMotorista();
-                case 0 -> System.out.println("Voltando...");
-                default -> System.out.println("Opção inválida.");
+                case "1":
+                    visualizarCorridasDisponiveis();
+                    break;
+                case "2":
+                    aceitarCorrida(motoristaLogado);
+                    break;
+                case "3":
+                    finalizarCorrida(motoristaLogado);
+                    break;
+                case "4":
+                    visualizarHistoricoMotorista(motoristaLogado);
+                    break;
+                case "0":
+                    return;
+                default:
+                    System.out.println("Opção inválida!");
+                    esperar(1);
             }
-        } while (opcao != 0);
+        }
     }
 
-    private void cadastrarCorrida() {
-        System.out.println("\n--- Cadastrar Nova Corrida ---");
-        System.out.print("ID da corrida: ");
-        int id = scanner.nextInt(); scanner.nextLine();
-        System.out.print("Origem: ");
+    private static void visualizarCorridasDisponiveis() {
+        limparTela();
+        System.out.println("--- Corridas Disponíveis ---");
+        Corrida.listarCorridasDisponiveis();
+        System.out.println("\nPressione Enter para continuar...");
+        scanner.nextLine();
+    }
+
+    private static void aceitarCorrida(Motorista motorista) {
+        if (!motorista.isDisponivel()) {
+            System.out.println("Você já está em uma corrida e não pode aceitar outra.");
+            esperar(2);
+            return;
+        }
+
+        limparTela();
+        System.out.println("--- Aceitar Corrida ---");
+        Corrida.listarCorridasDisponiveis();
+
+        System.out.print("\nDigite o ID da corrida que deseja aceitar (ou 0 para cancelar): ");
+        int idCorrida = scanner.nextInt();
+        scanner.nextLine();
+
+        if (idCorrida == 0) return;
+
+        Corrida corrida = Corrida.buscarCorrida(idCorrida);
+
+        if (corrida == null || corrida.getStatus() != 1) {
+            System.out.println("Não foi possível aceitar a corrida. Ela pode já ter sido pega ou o ID é inválido.");
+            esperar(2);
+            return;
+        }
+
+        boolean sucessoMotorista = corrida.modificarValoresCorrida("motorista_id", String.valueOf(motorista.getIdMotorista()));
+        boolean sucessoStatus = corrida.modificarValoresCorrida("status", "2");
+
+        if (sucessoMotorista && sucessoStatus) {
+            motorista.setDisponivel(false);
+            System.out.println("Corrida " + idCorrida + " aceita com sucesso!");
+        } else {
+            System.out.println("Ocorreu um erro ao atualizar os dados da corrida.");
+        }
+        esperar(2);
+    }
+
+    private static void finalizarCorrida(Motorista motorista) {
+        limparTela();
+        System.out.println("--- Finalizar Corrida ---");
+        System.out.print("Digite o ID da corrida que deseja finalizar: ");
+        
+        int idCorrida = scanner.nextInt();
+        scanner.nextLine();
+
+        Corrida corrida = Corrida.buscarCorrida(idCorrida);
+
+        if (corrida == null || corrida.getMotoristaId() != motorista.getIdMotorista() || corrida.getStatus() != 2) { 
+            System.out.println("Corrida inválida, não pertence a você ou não está com o status 'Aceita'.");
+            esperar(3);
+            return;
+        }
+
+        boolean sucessoFinalizar = corrida.modificarValoresCorrida("status", "4");
+
+        if (sucessoFinalizar) {
+            motorista.setDisponivel(true);
+            System.out.println("Corrida " + idCorrida + " finalizada com sucesso!");
+            esperar(2);
+            
+            System.out.print("Deseja avaliar o passageiro desta corrida? (s/n): ");
+            if (scanner.nextLine().equalsIgnoreCase("s")) {
+                Passageiro.avaliarPassageiro(corrida.getPassageiroId());
+            }
+        } else {
+            System.out.println("Falha ao finalizar a corrida.");
+            esperar(2);
+        }
+    }
+
+    private static void visualizarHistoricoMotorista(Motorista motorista) {
+        limparTela();
+        System.out.println("--- Meu Histórico de Corridas ---");
+        Corrida.historicoDeCorridas(motorista.getNumeroCnh());
+        System.out.println("\nPressione Enter para continuar...");
+        scanner.nextLine();
+    }
+
+    public static void solicitarNovaCorrida(Passageiro passageiroLogado) {
+        limparTela();
+        System.out.println("--- Solicitar Nova Corrida ---");
+        
+        System.out.print("Digite o endereço de ORIGEM: ");
         String origem = scanner.nextLine();
-        System.out.print("Destino: ");
+
+        System.out.print("Digite o endereço de DESTINO: ");
         String destino = scanner.nextLine();
-        System.out.print("Motorista (CNH): ");
-        int motoristaId = scanner.nextInt(); scanner.nextLine();
-        System.out.print("Passageiro (CPF): ");
-        String passageiro = scanner.nextLine();
-        System.out.print("Data (AAAA-MM-DD): ");
-        String data = scanner.nextLine();
-        System.out.print("Valor da corrida: ");
-        double valor = scanner.nextDouble(); scanner.nextLine();
 
-        Corrida nova = new Corrida(id, origem, destino, motoristaId, null, passageiro, data, valor, 0);
-        if (corridaDAO.adicionarCorrida(nova)) {
-            System.out.println("Corrida cadastrada com sucesso!");
+        System.out.print("Confirmar a solicitação de '" + origem + "' para '" + destino + "'? (s/n): ");
+        
+        if (!scanner.nextLine().equalsIgnoreCase("s")) {
+            System.out.println("Solicitação cancelada.");
+            esperar(2);
+            return;
+        }
+        
+        Corrida corridaCriada = Corrida.realizarCorrida(origem, destino, passageiroLogado);
+
+        if (corridaCriada != null) {
+            System.out.println("Corrida solicitada com sucesso!");
+            System.out.println("O ID da sua corrida é: " + corridaCriada.getIdCorrida());
         } else {
-            System.out.println("Erro ao cadastrar corrida.");
+            System.out.println("Houve um erro ao solicitar a corrida. Tente novamente.");
+        }
+        esperar(3);
+    }
+
+    private static void limparTela() {
+        for (int i = 0; i < 25; i++) {
+            System.out.println();
         }
     }
 
-    private void listarTodas() {
-        List<Corrida> corridas = corridaDAO.listarTodasCorridas();
-        if (corridas.isEmpty()) {
-            System.out.println("Nenhuma corrida cadastrada.");
-        } else {
-            for (Corrida c : corridas) {
-                System.out.println(c);
-            }
-        }
-    }
-
-    private void buscarPorId() {
-        System.out.print("ID da corrida: ");
-        int id = scanner.nextInt();
-        Corrida c = corridaDAO.buscarCorrida(id);
-        System.out.println(c != null ? c : "Corrida não encontrada.");
-    }
-
-    private void cancelarCorrida() {
-        System.out.print("ID da corrida a cancelar: ");
-        int id = scanner.nextInt();
-        Corrida c = corridaDAO.buscarCorrida(id);
-        if (c != null) {
-            c.cancelarCorrida();
-            corridaDAO.atualizarCorrida(c);
-            System.out.println("Corrida cancelada.");
-        } else {
-            System.out.println("Corrida não encontrada.");
-        }
-    }
-
-    private void finalizarCorrida() {
-        System.out.print("ID da corrida a finalizar: ");
-        int id = scanner.nextInt();
-        Corrida c = corridaDAO.buscarCorrida(id);
-        if (c != null) {
-            c.terminarCorrida();
-            corridaDAO.atualizarCorrida(c);
-            System.out.println("Corrida finalizada.");
-        } else {
-            System.out.println("Corrida não encontrada.");
-        }
-    }
-
-    private void avaliarCorrida() {
-        System.out.print("ID da corrida a avaliar: ");
-        int id = scanner.nextInt(); scanner.nextLine();
-        System.out.print("Nota (0 a 5): ");
-        int nota = scanner.nextInt(); scanner.nextLine();
-        Corrida c = corridaDAO.buscarCorrida(id);
-        if (c != null) {
-            c.avaliarCorrida(id, nota);
-        } else {
-            System.out.println("Corrida não encontrada.");
-        }
-    }
-
-    private void listarDisponiveis() {
-        List<Corrida> corridas = corridaDAO.listarCorridasDisponiveis();
-        if (corridas.isEmpty()) {
-            System.out.println("Nenhuma corrida disponível.");
-        } else {
-            for (Corrida c : corridas) {
-                System.out.println(c);
-            }
-        }
-    }
-
-    private void listarEntreDatas() {
-        System.out.print("Data inicial (AAAA-MM-DD): ");
-        String d1 = scanner.nextLine();
-        System.out.print("Data final (AAAA-MM-DD): ");
-        String d2 = scanner.nextLine();
-
-        List<Corrida> corridas = corridaDAO.listarCorridasPorData(d1, d2);
-        for (Corrida c : corridas) {
-            System.out.println(c);
-        }
-    }
-
-    private void historicoPorPassageiro() {
-        System.out.print("CPF do passageiro: ");
-        String cpf = scanner.nextLine();
-        List<Corrida> corridas = corridaDAO.historicoDeCorridasPorPassageiro(cpf);
-        for (Corrida c : corridas) {
-            System.out.println(c);
-        }
-    }
-
-    private void historicoPorMotorista() {
-        System.out.print("CNH do motorista: ");
-        int cnh = scanner.nextInt();
-        List<Corrida> corridas = corridaDAO.historicoDeCorridasPorMotorista(cnh);
-        for (Corrida c : corridas) {
-            System.out.println(c);
+    private static void esperar(int segundos) {
+        try {
+            Thread.sleep(segundos * 1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 }

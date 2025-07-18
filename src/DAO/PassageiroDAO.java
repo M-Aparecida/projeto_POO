@@ -21,7 +21,7 @@ public class PassageiroDAO {
                 ResultSet rs = ps.executeQuery();
 
                 while (rs.next()) {
-                    Passageiro p = new Passageiro(rs.getString("nome"), rs.getString("cpf"), rs.getString("email"), rs.getString("telefone"), rs.getString("senha"), rs.getString("genero"), rs.getInt("id_passageiro"), rs.getString("cartao_dados"), rs.getInt("qtd_corridas"), rs.getFloat("avaliacao_media"), rs.getInt("idade"));
+                    Passageiro p = new Passageiro(rs.getString("nome"), rs.getString("cpf"), rs.getString("email"), rs.getString("telefone"), rs.getString("senha"), rs.getString("genero"), rs.getInt("id_passageiro"), rs.getString("cartao_dados"), rs.getInt("qtd_corridas_concluidas"), rs.getFloat("avaliacao_media"), rs.getInt("idade"));
 
                     passageiros.add(p);
                 }
@@ -33,7 +33,7 @@ public class PassageiroDAO {
     }
     
     public boolean cadastraPassageiro(Passageiro passageiro){
-        String sql = "INSERT INTO passageiro (nome, cpf, email, telefone, senha, idade, genero, qtd_corridas, avaliacao_media, cartao_dados) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO passageiro (nome, cpf, email, telefone, senha, idade, genero, qtd_corridas_concluidas, avaliacao_media, cartao_dados) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try(Connection conn = Conexao.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
@@ -77,7 +77,7 @@ public class PassageiroDAO {
                     rs.getString("genero"),
                     rs.getInt("id_passageiro"),
                     rs.getString("cartao_dados"),
-                    rs.getInt("qtd_corridas"),
+                    rs.getInt("qtd_corridas_concluidas"),
                     rs.getInt("avaliacao_media"),
                     rs.getInt("idade")
                 );
@@ -166,7 +166,7 @@ public class PassageiroDAO {
                     rs.getString("genero"),
                     rs.getInt("id_passageiro"),
                     rs.getString("cartao_dados"),
-                    rs.getInt("qtd_corridas"),
+                    rs.getInt("qtd_corridas_concluidas"),
                     rs.getInt("avaliacao_media"),
                     rs.getInt("idade")
                 );
@@ -178,7 +178,7 @@ public class PassageiroDAO {
     }
     
     public void updateAvaliacao(float avaliacao, int id_passageiro){
-        String sqlQtdCorridas = "SELECT qtd_corridas, avaliacao_media FROM passageiro WHERE id_passageiro = ?";
+        String sqlQtdCorridas = "SELECT qtd_corridas_concluidas, avaliacao_media FROM passageiro WHERE id_passageiro = ?";
         int qtdCorridas = 0;
         float avaliacaoMedia = 0;
         float novaAvalicaoMedia = 0;
@@ -188,15 +188,15 @@ public class PassageiroDAO {
             ps.setInt(1, id_passageiro);
             ResultSet rs = ps.executeQuery();
             rs.next();
-            qtdCorridas = rs.getInt("qtd_corridas");
+            qtdCorridas = rs.getInt("qtd_corridas_concluidas");
             avaliacaoMedia = rs.getFloat("avaliacao_media");
         } catch (SQLException e) {
-            System.out.println("Erro ao consultar qtd_corridas e avaliacao_media: " + e.getMessage());
+            System.out.println("Erro ao consultar qtd_corridas_concluidas e avaliacao_media: " + e.getMessage());
         }
         
         novaAvalicaoMedia = ((avaliacaoMedia * qtdCorridas) + avaliacao)/ (qtdCorridas+1);
     
-        String sql = "UPDATE passageiro SET avaliacao_media = ?, qtd_corridas = qtd_corridas+1 WHERE id_passageiro = ?";
+        String sql = "UPDATE passageiro SET avaliacao_media = ?, qtd_corridas_concluidas = qtd_corridas_concluidas+1 WHERE id_passageiro = ?";
         try (Connection conn = Conexao.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setFloat(1, novaAvalicaoMedia);
