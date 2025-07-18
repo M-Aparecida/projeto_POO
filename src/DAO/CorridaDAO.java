@@ -1,84 +1,127 @@
 package DAO;
 
-import entity.Corrida;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import conexao.Conexao;
+import entity.Corrida;
+
 public class CorridaDAO {
-    private List<Corrida> corridas = new ArrayList<>();
+    public List<Corrida> listarTodasCorridas(){
+        List<Corrida> corridas = new ArrayList<>();
+        String sql = """
+            SELECT 
+                c.id_corrida,
+                c.origem,
+                c.destino,
+                c.fator_transito,
+                c.preco,
+                c.data_corrida,
+                p.nome AS nome_passageiro,
+                m.nome AS nome_motorista,
+                v.modelo AS modelo_veiculo,
+                c.passageiro_id,
+                c.motorista_id,
+                c.veiculo_id,
+                c.status
+            FROM corrida c
+            JOIN passageiro p ON c.passageiro_id = p.id_passageiro
+            JOIN motorista m ON c.motorista_id = m.id_motorista
+            JOIN veiculo v ON c.veiculo_id = v.id_veiculo
+        """;
 
-    public boolean adicionarCorrida(Corrida corrida) {
-        if (corrida != null) {
-            corridas.add(corrida);
-            return true;
-        }
-        return false;
-    }
+        try(Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
 
-    public boolean atualizarCorrida(Corrida novaCorrida) {
-        for (int i = 0; i < corridas.size(); i++) {
-            if (corridas.get(i).getIdcorrida().equals(novaCorrida.getIdcorrida())) {
-                corridas.set(i, novaCorrida);
-                return true;
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Corrida c = new Corrida(
+                    rs.getString("origem"),
+                    rs.getString("destino"),
+                    rs.getInt("id_corrida"),
+                    rs.getInt("fator_transito"),
+                    rs.getFloat("preco"),
+                    rs.getString("data_corrida"),
+                    rs.getString("nome_passageiro"),
+                    rs.getString("nome_motorista"),
+                    rs.getString("modelo_veiculo"),
+                    rs.getInt("passageiro_id"),
+                    rs.getInt("motorista_id"),
+                    rs.getInt("veiculo_id"),
+                    rs.getInt("status")
+                );
+                corridas.add(c);
             }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar corridas: " + e.getMessage());
         }
-        return false;
+
+        return corridas;
     }
 
-    public boolean removerCorrida(Integer idCorrida) {
-        return corridas.removeIf(c -> c.getIdcorrida().equals(idCorrida));
-    }
+    public List<Corrida> listarCorridasPorPeriodo(String data1, String data2) {
+        List<Corrida> corridas = new ArrayList<>();
+        String sql = """
+            SELECT 
+                c.id_corrida,
+                c.origem,
+                c.destino,
+                c.fator_transito,
+                c.preco,
+                c.data_corrida,
+                p.nome AS nome_passageiro,
+                m.nome AS nome_motorista,
+                v.modelo AS modelo_veiculo,
+                c.passageiro_id,
+                c.motorista_id,
+                c.veiculo_id,
+                c.status
+            FROM corrida c
+            JOIN passageiro p ON c.passageiro_id = p.id_passageiro
+            JOIN motorista m ON c.motorista_id = m.id_motorista
+            JOIN veiculo v ON c.veiculo_id = v.id_veiculo
+            WHERE c.data_corrida >= ? AND c.data_corrida < ?
+        """;
 
-    public Corrida buscarCorrida(Integer idCorrida) {
-        for (Corrida c : corridas) {
-            if (c.getIdcorrida().equals(idCorrida)) {
-                return c;
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            LocalDate fim = LocalDate.parse(data2).plusDays(1);
+            ps.setString(1, data1);
+            ps.setString(2, fim.toString());
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Corrida c = new Corrida(
+                    rs.getString("origem"),
+                    rs.getString("destino"),
+                    rs.getInt("id_corrida"),
+                    rs.getInt("fator_transito"),
+                    rs.getFloat("preco"),
+                    rs.getString("data_corrida"),
+                    rs.getString("nome_passageiro"),
+                    rs.getString("nome_motorista"),
+                    rs.getString("modelo_veiculo"),
+                    rs.getInt("passageiro_id"),
+                    rs.getInt("motorista_id"),
+                    rs.getInt("veiculo_id"),
+                    rs.getInt("status")
+                );
+                corridas.add(c);
             }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar corridas por período: " + e.getMessage());
         }
-        return null;
+
+        return corridas;
     }
 
-    public List<Corrida> listarTodasCorridas() {
-        return new ArrayList<>(corridas);
-    }
 
-    public List<Corrida> listarCorridasDisponiveis() {
-        List<Corrida> disponiveis = new ArrayList<>();
-        for (Corrida c : corridas) {
-            if (c.getStatus() != null && c.getStatus() == 0) {
-                disponiveis.add(c);
-            }
-        }
-        return disponiveis;
-    }
-
-    public List<Corrida> listarCorridasPorData(String data1, String data2) {
-        List<Corrida> resultado = new ArrayList<>();
-        for (Corrida c : corridas) {
-            if (c.getData() != null && c.getData().compareTo(data1) >= 0 && c.getData().compareTo(data2) <= 0) {
-                resultado.add(c);
-            }
-        }
-        return resultado;
-    }
-
-    public List<Corrida> historicoDeCorridasPorPassageiro(String cpf) {
-        List<Corrida> historico = new ArrayList<>();
-        for (Corrida c : corridas) {
-            if (c.getPassageiro() != null && c.getPassageiro().equals(cpf)) {
-                historico.add(c);
-            }
-        }
-        return historico;
-    }
-
-    public List<Corrida> historicoDeCorridasPorMotorista(int cnh) {
-        List<Corrida> historico = new ArrayList<>();
-        for (Corrida c : corridas) {
-            if (c.getMotoristaId() != null && c.getMotoristaId() == cnh) {
-                historico.add(c);
-            }
-        }
-        return historico;
-    }
 }
