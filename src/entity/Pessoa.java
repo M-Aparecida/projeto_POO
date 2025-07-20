@@ -55,7 +55,12 @@ public abstract class Pessoa {
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
+        if (nome == null || nome.isEmpty() || nome.matches("\\s*")) {
+                throw new IllegalArgumentException("O nome não pode ser nulo, vazio ou conter apenas espaços.");
+            }
+            
+            this.nome = nome;
+
     }
 
     public String getCpf() {
