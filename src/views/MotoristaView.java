@@ -81,8 +81,17 @@ public class MotoristaView {
 public static boolean menuCadastroMotorista(){
         Motorista motorista = new Motorista();
 
-        System.out.print("Insira o seu nome: ");
-        motorista.setNome(scanner.nextLine());
+        System.out.println("=== Cadastro do Motorista ===");
+
+         do {
+        try {
+            System.out.print("Insira o seu nome: ");
+            motorista.setNome(scanner.nextLine());
+            break; 
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro: " + e.getMessage());
+        }
+    } while (true);
         limparTela();
 
         do{
