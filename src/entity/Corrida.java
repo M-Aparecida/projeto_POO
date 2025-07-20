@@ -153,12 +153,13 @@ public class Corrida {
             return;
         }
 
-        System.out.printf("| %-40s | %-41s | %-19s | %-27s | %-17s | %-18s | %-7s | %-6s |\n",
-                "Origem", "Destino", "Data", "Passageiro", "Motorista", "Veículo", "Preço", "Status");
+        System.out.printf("| %-5s | %-40s | %-41s | %-19s | %-27s | %-17s | %-18s | %-7s | %-6s |\n",
+                "ID","Origem", "Destino", "Data", "Passageiro", "Motorista", "Veículo", "Preço", "Status");
         System.out.println("|------------------------------------------|-------------------------------------------|---------------------|-----------------------------|-------------------|--------------------|---------|--------|");
 
         for (Corrida c : corridas) {
-            System.out.printf("| %-40s | %-41s | %-19s | %-27s | %-17s | %-18s | %-7.2f | %-6d |\n",
+            System.out.printf("| %-5s | %-40s | %-41s | %-19s | %-27s | %-17s | %-18s | %-7.2f | %-6d |\n",
+                    c.getIdCorrida(),        
                     c.getOrigem(),
                     c.getDestino(),
                     c.getData(),

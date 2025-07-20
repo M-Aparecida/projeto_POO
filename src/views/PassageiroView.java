@@ -3,6 +3,8 @@ package views;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import entity.Corrida;
+import entity.Motorista;
 import entity.Passageiro;
 
 public class PassageiroView {
@@ -173,6 +175,7 @@ public class PassageiroView {
                     mostrarMenu = true;
                     break;
                 case "3":
+                    menuHistoricoEAvaliacao(p);
                     mostrarMenu = true;
                     break;
                 case "4":
@@ -270,6 +273,57 @@ public class PassageiroView {
                     mostrarMenu = false;
             }
         }
+    }
+
+    private static void menuHistoricoEAvaliacao(Passageiro passageiroLogado) {
+        limparTela();
+        System.out.println("--- Meu Histórico de Corridas ---");
+        
+        Corrida.historicoDeCorridas(passageiroLogado.getCpf());
+
+        System.out.println("---------------------------------");
+        System.out.print("Digite o ID da corrida cujo motorista você deseja avaliar (ou 0 para voltar): ");
+        int idCorrida = Integer.parseInt(scanner.nextLine());
+
+        if (idCorrida == 0) {
+            return;
+        }
+
+        avaliarMotoristaDaCorrida(idCorrida, passageiroLogado);
+    }
+
+    private static void avaliarMotoristaDaCorrida(int idCorrida, Passageiro passageiroLogado) {
+        Corrida corrida = Corrida.buscarCorrida(idCorrida);
+
+        if (corrida == null) {
+            System.out.println("Erro: Corrida com ID " + idCorrida + " não encontrada.");
+            esperar(2);
+            return;
+        }
+        if (corrida.getPassageiroId() != passageiroLogado.getIdPassageiro()) {
+            System.out.println("Erro: Você não pode avaliar uma corrida que não é sua.");
+            esperar(2);
+            return;
+        }
+        if (corrida.getStatus() != 4) {
+            System.out.println("Erro: Você só pode avaliar corridas que já foram finalizadas.");
+            esperar(2);
+            return;
+        }
+        if (corrida.getMotoristaId() == 0) {
+            System.out.println("Erro: Esta corrida não teve um motorista associado para avaliar.");
+            esperar(2);
+            return;
+        }
+        
+        limparTela();
+        System.out.println("Avaliando a corrida para: " + corrida.getDestino());
+        System.out.println("Motorista: " + corrida.getMotorista());
+
+        Motorista.avaliarMotorista(corrida.getMotoristaId());
+
+        System.out.println("Obrigado pela sua avaliação!");
+        esperar(2);
     }
 
     public static void limparTela() {
