@@ -4,6 +4,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import DAO.MotoristaDAO;
+import DAO.CorridaDAO;
 import entity.Motorista;
 import entity.Passageiro;
 import DAO.PassageiroDAO; 
@@ -53,7 +54,7 @@ public class MotoristaView {
         String emailLogin;
         System.out.print("E-mail: ");
         do {
-            emailLogin = scanner.nextLine();
+           emailLogin = scanner.nextLine().trim(); 
             if (emailLogin.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
                 break;
             } else {
@@ -196,10 +197,15 @@ public static boolean menuCadastroMotorista(){
                 mostrarMenu = true;
                     break;
                 case "5":
+                CorridaView.menuAreaCorrida(m);
                     break;
                  case "6":
+                 menuRelatorioFaturamento();
+                 mostrarMenu = true;
                     break;
                 case "7": 
+                VeiculoView.menuVeiculo();
+                mostrarMenu = true;
                     break;
                 case "8":
                  menuAvaliaPassageiro();
@@ -237,6 +243,16 @@ public static boolean menuCadastroMotorista(){
             System.out.print("Escolha uma opção: ");
             String opcao = scanner.nextLine();
 
+            switch(opcao){
+                case "1":
+                   
+                    break;
+                case "2":
+                   
+                    esperar(2);
+                    break;
+            }
+
             if (opcao.equals("0")) return;
             System.out.println("Função de relatório não implementada ainda.");
         }
@@ -246,10 +262,10 @@ public static boolean menuCadastroMotorista(){
         boolean mostrarMenu = true;
         while (mostrarMenu) {
             System.out.println("\n=== Editar Cadastro Motorista ===");
-            System.out.println("1. Editar Nome");
-            System.out.println("2. Editar Email");
-            System.out.println("3. Editar Telefone");
-            System.out.println("4. Editar Senha");
+            System.out.println("1. Editar nome");
+            System.out.println("2. Editar email");
+            System.out.println("3. Editar numero da cnh");
+            System.out.println("4. Editar senha");
             System.out.println("0. Voltar");
             System.out.print("Escolha uma opção: ");
             String opcao = scanner.nextLine();
@@ -283,18 +299,18 @@ public static boolean menuCadastroMotorista(){
                     mostrarMenu = true;
                     break;
                 case "3":
-                System.out.println("\n=== Editar Telefone ===");
-                    System.out.print("Insira o novo telefone ((xx) xxxxx-xxxx): ");
-                    String novoTelefone = scanner.nextLine();
-                    if (novoTelefone.matches("\\(\\d{2}\\) \\d{5}-\\d{4}")) {
-                        m.modificarValoresMotorista("telefone", novoTelefone);
-                        m.setTelefone(novoTelefone);
-                        System.out.println("Telefone alterado com sucesso!");
-                    } else {
-                        System.out.println("Telefone inválido.");
-                    }
-                    esperar(1);
-                    mostrarMenu = true;
+                System.out.println("\n=== Editar numero da cnh ===");
+                System.out.println("Insira o novo numero da cnh: ");
+                long novoNumeroCnh = scanner.nextLong();
+                scanner.nextLine(); // Limpar o buffer
+               if (m.modificarValoresMotorista("numero cnh", String.valueOf(novoNumeroCnh))) { 
+                    m.setNumeroCnh(novoNumeroCnh); 
+                    System.out.println("Número da CNH alterado com sucesso!");
+                } else {
+                    System.out.println("Falha ao alterar o número da CNH.");
+                }
+                mostrarMenu = true;
+                esperar(2);
                     break;
                 case "4":
                 System.out.println("\n=== Editar Senha ===");
@@ -309,6 +325,9 @@ public static boolean menuCadastroMotorista(){
                     esperar(1);
                     mostrarMenu = true;
                     break;
+                case "0":
+
+                    return;
                 default:
                     System.out.println("Opção inválida!");
                     mostrarMenu = false;               
