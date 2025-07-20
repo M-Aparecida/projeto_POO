@@ -177,7 +177,7 @@ public class CorridaView {
         esperar(2);
     }
 
-    private static void visualizarHistoricoMotorista(Motorista motorista) {
+    public static void visualizarHistoricoMotorista(Motorista motorista) {
         limparTela();
         System.out.println("--- Meu Histórico de Corridas ---");
         Corrida.historicoDeCorridas(motorista.getNumeroCnh());
