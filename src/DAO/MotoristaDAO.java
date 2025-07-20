@@ -46,7 +46,7 @@ public class MotoristaDAO{
     }
  }
 public List<Motorista> listarMotoristas() {
-    String sql = "SELECT * FROM motorista";
+    String sql = "SELECT * FROM motorista ORDER BY id_motorista";
     List<Motorista> motoristas = new ArrayList<>();
 
     try (Connection conn = Conexao.getConnection();
@@ -122,8 +122,7 @@ public List<Motorista> listarMotoristas() {
         try (Connection conn = Conexao.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)) {
             
-            ps.setString(1, "%" + email + "%"); 
-
+            ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -250,6 +249,19 @@ public List<Motorista> listarMotoristas() {
             return false;
         }
     }
+    public boolean alterarNumeroCnh(long novoNumero, int id_motorista) {
+        String sql = "UPDATE motorista SET numero_cnh = ? WHERE id_motorista = ?";
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, novoNumero);
+            ps.setInt(2, id_motorista);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Erro ao alterar numero de cnh: " + e.getMessage());
+            return false;
+        }
+    }
 
  public void updateAvaliacao(float avaliacao, int id_motorista){
         String sqlQtdCorridas = "SELECT qtd_corridas_concluidas, avaliacao_media FROM motorista WHERE id_motorista = ?";
@@ -283,9 +295,20 @@ public List<Motorista> listarMotoristas() {
 
 
 
+    public boolean alterarDisponibilidade(boolean disponivel, int idMotorista) {
+        String sql = "UPDATE motorista SET disponivel = ? WHERE id_motorista = ?";
+        try (Connection conn = Conexao.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setBoolean(1, disponivel);
+            ps.setInt(2, idMotorista);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Erro ao alterar disponibilidade do motorista: " + e.getMessage());
+            return false;
+        }
+    }
 
 }
-
 
 
 
