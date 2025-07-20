@@ -1,6 +1,8 @@
 package views;
 
 import java.util.Scanner;
+import DAO.CorridaDAO;       
+import DAO.MotoristaDAO;    
 import entity.Corrida;
 import entity.Motorista;
 import entity.Passageiro;
@@ -16,38 +18,69 @@ public class CorridaView {
         }
 
         while (true) {
+            CorridaDAO corridaDAO = new CorridaDAO();
+            MotoristaDAO motoristaDAO = new MotoristaDAO();
+            Corrida corridaAtual = corridaDAO.buscarCorridaAtivaPorMotorista(motoristaLogado.getIdMotorista());
+            motoristaLogado.setDisponivel(corridaAtual == null);
+
             limparTela();
             System.out.println("\n=== Área da Corrida ===");
             System.out.println("Motorista: " + motoristaLogado.getNome());
             System.out.println("Status: " + (motoristaLogado.isDisponivel() ? "Disponível" : "Em corrida"));
             System.out.println("---------------------------------");
-            System.out.println("1. Ver Corridas Disponíveis");
-            System.out.println("2. Aceitar uma Corrida");
-            System.out.println("3. Finalizar Corrida Atual");
-            System.out.println("4. Ver Meu Histórico de Corridas");
-            System.out.println("0. Voltar");
-            System.out.print("Escolha uma opção: ");
+            
+            if (corridaAtual != null) {
+                System.out.println("Você está em uma corrida (ID: " + corridaAtual.getIdCorrida() + ")");
+                System.out.println("De: " + corridaAtual.getOrigem());
+                System.out.println("Para: " + corridaAtual.getDestino());
+                System.out.println("---------------------------------");
+                System.out.println("1. Finalizar Corrida");
+                System.out.println("2. Cancelar Corrida");
+                System.out.println("3. Ver Meu Histórico de Corridas");
+                System.out.println("0. Voltar");
+                System.out.print("Escolha uma opção: ");
 
-            String opcao = scanner.nextLine();
+                String opcao = scanner.nextLine();
+                switch (opcao) {
+                    case "1":
+                        finalizarCorrida(motoristaLogado, corridaAtual); 
+                        break;
+                    case "2":
+                        cancelarCorrida(motoristaLogado, corridaAtual); 
+                        break;
+                    case "3":
+                        visualizarHistoricoMotorista(motoristaLogado);
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        System.out.println("Opção inválida!");
+                        esperar(1);
+                }
+            } else {
+                System.out.println("1. Ver Corridas Disponíveis");
+                System.out.println("2. Aceitar uma Corrida");
+                System.out.println("3. Ver Meu Histórico de Corridas");
+                System.out.println("0. Voltar");
+                System.out.print("Escolha uma opção: ");
 
-            switch (opcao) {
-                case "1":
-                    visualizarCorridasDisponiveis();
-                    break;
-                case "2":
-                    aceitarCorrida(motoristaLogado);
-                    break;
-                case "3":
-                    finalizarCorrida(motoristaLogado);
-                    break;
-                case "4":
-                    visualizarHistoricoMotorista(motoristaLogado);
-                    break;
-                case "0":
-                    return;
-                default:
-                    System.out.println("Opção inválida!");
-                    esperar(1);
+                String opcao = scanner.nextLine();
+                switch (opcao) {
+                    case "1":
+                        visualizarCorridasDisponiveis();
+                        break;
+                    case "2":
+                        aceitarCorrida(motoristaLogado);
+                        break;
+                    case "3":
+                        visualizarHistoricoMotorista(motoristaLogado);
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        System.out.println("Opção inválida!");
+                        esperar(1);
+                }
             }
         }
     }
@@ -72,8 +105,7 @@ public class CorridaView {
         Corrida.listarCorridasDisponiveis();
 
         System.out.print("\nDigite o ID da corrida que deseja aceitar (ou 0 para cancelar): ");
-        int idCorrida = scanner.nextInt();
-        scanner.nextLine();
+        int idCorrida = Integer.parseInt(scanner.nextLine());
 
         if (idCorrida == 0) return;
 
@@ -89,6 +121,8 @@ public class CorridaView {
         boolean sucessoStatus = corrida.modificarValoresCorrida("status", "2");
 
         if (sucessoMotorista && sucessoStatus) {
+            MotoristaDAO motoristaDAO = new MotoristaDAO();
+            motoristaDAO.alterarDisponibilidade(false, motorista.getIdMotorista());
             motorista.setDisponivel(false);
             System.out.println("Corrida " + idCorrida + " aceita com sucesso!");
         } else {
@@ -97,27 +131,20 @@ public class CorridaView {
         esperar(2);
     }
 
-    private static void finalizarCorrida(Motorista motorista) {
-        limparTela();
-        System.out.println("--- Finalizar Corrida ---");
-        System.out.print("Digite o ID da corrida que deseja finalizar: ");
-        
-        int idCorrida = scanner.nextInt();
-        scanner.nextLine();
-
-        Corrida corrida = Corrida.buscarCorrida(idCorrida);
-
-        if (corrida == null || corrida.getMotoristaId() != motorista.getIdMotorista() || corrida.getStatus() != 2) { 
-            System.out.println("Corrida inválida, não pertence a você ou não está com o status 'Aceita'.");
-            esperar(3);
+    private static void finalizarCorrida(Motorista motorista, Corrida corrida) {
+        if (motorista.isDisponivel()) {
+            System.out.println("Você não está em nenhuma corrida para finalizar.");
+            esperar(2);
             return;
         }
 
-        boolean sucessoFinalizar = corrida.modificarValoresCorrida("status", "4");
+        boolean sucessoFinalizar = corrida.terminarCorrida(); 
 
         if (sucessoFinalizar) {
+            MotoristaDAO motoristaDAO = new MotoristaDAO();
+            motoristaDAO.alterarDisponibilidade(true, motorista.getIdMotorista());
             motorista.setDisponivel(true);
-            System.out.println("Corrida " + idCorrida + " finalizada com sucesso!");
+            System.out.println("Corrida " + corrida.getIdCorrida() + " finalizada com sucesso!");
             esperar(2);
             
             System.out.print("Deseja avaliar o passageiro desta corrida? (s/n): ");
@@ -128,6 +155,26 @@ public class CorridaView {
             System.out.println("Falha ao finalizar a corrida.");
             esperar(2);
         }
+    }
+    private static void cancelarCorrida(Motorista motorista, Corrida corrida) {
+        System.out.print("Tem certeza que deseja cancelar a corrida " + corrida.getIdCorrida() + "? (s/n): ");
+        if (!scanner.nextLine().equalsIgnoreCase("s")) {
+            System.out.println("Operação cancelada.");
+            esperar(2);
+            return;
+        }
+        
+        boolean sucessoCancelar = corrida.cancelarCorrida();
+        
+        if (sucessoCancelar) {
+            MotoristaDAO motoristaDAO = new MotoristaDAO();
+            motoristaDAO.alterarDisponibilidade(true, motorista.getIdMotorista());
+            motorista.setDisponivel(true);
+            System.out.println("Corrida cancelada com sucesso. Você está disponível para novas corridas.");
+        } else {
+            System.out.println("Falha ao cancelar a corrida.");
+        }
+        esperar(2);
     }
 
     private static void visualizarHistoricoMotorista(Motorista motorista) {
