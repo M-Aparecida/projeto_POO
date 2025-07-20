@@ -523,5 +523,47 @@ public class CorridaDAO {
         }
         return null;
     }
-    
+    public List<Corrida> listarCorridasPorMotoristaEPeriodo(int idMotorista, String dataInicio, String dataFim) {
+        List<Corrida> corridas = new ArrayList<>();
+        // CORREÇÃO: Adicionada a condição "c.status = 3" para buscar apenas corridas concluídas.
+        // Se o seu status para "concluída" for outro número, basta alterá-lo aqui.
+        String sql = """
+            SELECT 
+                c.id_corrida, c.origem, c.destino, c.fator_transito, c.preco, c.data_corrida,
+                p.nome AS nome_passageiro, m.nome AS nome_motorista, v.modelo AS modelo_veiculo,
+                c.passageiro_id, c.motorista_id, c.veiculo_id, c.status
+            FROM corrida c
+            JOIN passageiro p ON c.passageiro_id = p.id_passageiro
+            JOIN motorista m ON c.motorista_id = m.id_motorista
+            JOIN veiculo v ON c.veiculo_id = v.id_veiculo
+            WHERE c.motorista_id = ? AND c.status = 4 AND c.data_corrida >= ? AND c.data_corrida < ?
+            ORDER BY c.data_corrida DESC
+        """;
+
+        try (Connection conn = Conexao.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            LocalDate fim = LocalDate.parse(dataFim).plusDays(1);
+            
+            ps.setInt(1, idMotorista);
+            ps.setString(2, dataInicio);
+            ps.setString(3, fim.toString());
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Corrida corrida = new Corrida(
+                    rs.getString("origem"), rs.getString("destino"), rs.getInt("id_corrida"),
+                    rs.getInt("fator_transito"), rs.getFloat("preco"), rs.getString("data_corrida"),
+                    rs.getString("nome_passageiro"), rs.getString("nome_motorista"), rs.getString("modelo_veiculo"),
+                    rs.getInt("passageiro_id"), rs.getInt("motorista_id"), rs.getInt("veiculo_id"),
+                    rs.getInt("status")
+                );
+                corridas.add(corrida);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar corridas por motorista e período: " + e.getMessage());
+        }
+        return corridas;
+    }
 }
