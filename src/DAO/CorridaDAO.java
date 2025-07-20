@@ -203,8 +203,8 @@ public class CorridaDAO {
                 c.status
             FROM corrida c
             JOIN passageiro p ON c.passageiro_id = p.id_passageiro
-            JOIN motorista m ON c.motorista_id = m.id_motorista
-            JOIN veiculo v ON c.veiculo_id = v.id_veiculo
+            LEFT JOIN motorista m ON c.motorista_id = m.id_motorista
+            LEFT JOIN veiculo v ON c.veiculo_id = v.id_veiculo
             WHERE p.cpf = ?
             ORDER BY c.data_corrida DESC
         """;

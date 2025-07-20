@@ -146,7 +146,7 @@ public class CorridaView {
             motorista.setDisponivel(true);
             System.out.println("Corrida " + corrida.getIdCorrida() + " finalizada com sucesso!");
             esperar(2);
-            
+
             System.out.print("Deseja avaliar o passageiro desta corrida? (s/n): ");
             if (scanner.nextLine().equalsIgnoreCase("s")) {
                 Passageiro.avaliarPassageiro(corrida.getPassageiroId());
