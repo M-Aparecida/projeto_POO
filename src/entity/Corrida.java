@@ -281,6 +281,16 @@ public class Corrida {
         return dao.inserirCorrida(novaCorrida);
     }
 
+    public boolean terminarCorrida() {
+        CorridaDAO dao = new CorridaDAO();
+        return dao.alterarStatus(4, this.idCorrida);
+    }
+
+    public boolean cancelarCorrida() {
+        CorridaDAO dao = new CorridaDAO();
+        return dao.alterarStatus(5, this.idCorrida);
+    }
+    
     public String getOrigem() {
         return origem;
     }
@@ -385,5 +395,3 @@ public class Corrida {
         this.status = status;
     }
 }
-
-
