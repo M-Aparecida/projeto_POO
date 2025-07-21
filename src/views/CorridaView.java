@@ -19,7 +19,6 @@ public class CorridaView {
 
         while (true) {
             CorridaDAO corridaDAO = new CorridaDAO();
-            MotoristaDAO motoristaDAO = new MotoristaDAO();
             Corrida corridaAtual = corridaDAO.buscarCorridaAtivaPorMotorista(motoristaLogado.getIdMotorista());
             motoristaLogado.setDisponivel(corridaAtual == null);
 
@@ -212,6 +211,36 @@ public class CorridaView {
             System.out.println("Houve um erro ao solicitar a corrida. Tente novamente.");
         }
         esperar(3);
+    }
+
+    public static void menuCorridasPassageiro(Passageiro p){
+        boolean mostrarMenu = true;
+        while (true) {
+            if (mostrarMenu) {
+                limparTela();
+                System.out.println("\n=== Menu de Corrida de Passageiro ===");
+                System.out.println("1. Solicitar Corrida");
+                System.out.println("2. Avaliar Motorista");
+                System.out.println("0. Voltar ao Menu Principal");
+                System.out.print("Escolha uma opção: ");
+            }
+            String opcao = scanner.nextLine();
+            switch (opcao) {
+                case "1":
+                    solicitarNovaCorrida(p);
+                    mostrarMenu = true;
+                    break;
+                case "2":
+                    PassageiroView.menuHistoricoEAvaliacao(p);
+                    mostrarMenu = true;
+                    break;
+                case "0":
+                    return;
+                default:
+                    System.out.print("Opção inválida, escolha uma válida: ");
+                    mostrarMenu = false;
+            }
+        }
     }
 
     private static void limparTela() {

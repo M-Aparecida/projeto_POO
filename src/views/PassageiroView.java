@@ -157,9 +157,7 @@ public class PassageiroView {
                 limparTela();
                 System.out.println("\n=== Tela Inicial do Passageiro ===");
                 System.out.println("1. Editar Cadastro");
-                System.out.println("2. Solicitar Corrida");
-                System.out.println("3. Listar Histórico de Corridas");
-                System.out.println("4. Área da Corrida");
+                System.out.println("2. Área da Corrida");
                 System.out.println("0. Voltar ao Menu Principal");
                 System.out.print("Escolha uma opção: ");
             }
@@ -171,14 +169,7 @@ public class PassageiroView {
                     mostrarMenu = true;
                     break;
                 case "2":
-                    CorridaView.solicitarNovaCorrida(p);
-                    mostrarMenu = true;
-                    break;
-                case "3":
-                    menuHistoricoEAvaliacao(p);
-                    mostrarMenu = true;
-                    break;
-                case "4":
+                    CorridaView.menuCorridasPassageiro(p);
                     mostrarMenu = true;
                     break;
                 case "0":
@@ -275,15 +266,26 @@ public class PassageiroView {
         }
     }
 
-    private static void menuHistoricoEAvaliacao(Passageiro passageiroLogado) {
+    public static void menuHistoricoEAvaliacao(Passageiro passageiroLogado) {
         limparTela();
+        int idCorrida = 0;
         System.out.println("--- Meu Histórico de Corridas ---");
         
         Corrida.historicoDeCorridas(passageiroLogado.getCpf());
-
+        
         System.out.println("---------------------------------");
-        System.out.print("Digite o ID da corrida cujo motorista você deseja avaliar (ou 0 para voltar): ");
-        int idCorrida = Integer.parseInt(scanner.nextLine());
+        do{
+            System.out.print("Digite o ID da corrida cujo motorista você deseja avaliar (ou 0 para voltar): ");
+            try {
+                idCorrida = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("---------------------------------");
+                System.out.println("Digite uma entrada válida");
+                continue;
+            }
+        }while(true);
+        
 
         if (idCorrida == 0) {
             return;
