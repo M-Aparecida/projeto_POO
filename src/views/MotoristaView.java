@@ -5,13 +5,9 @@ import java.util.Map;
 import java.util.Scanner;
 
 import DAO.MotoristaDAO;
-import DAO.CorridaDAO;
 import entity.Motorista;
 import entity.Passageiro;
-import DAO.PassageiroDAO; 
-import views.PassageiroView;   
-import entity.Pessoa;   
-
+import DAO.PassageiroDAO;
 
 public class MotoristaView {
         static Scanner scanner = new Scanner(System.in);

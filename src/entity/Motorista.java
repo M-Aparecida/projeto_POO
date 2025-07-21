@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Scanner;
 
 import DAO.MotoristaDAO;
-import DAO.PassageiroDAO;
 
 public class Motorista extends Pessoa {
     private long numeroCnh;

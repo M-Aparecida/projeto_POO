@@ -1,14 +1,6 @@
-import entity.Motorista;
-
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import DAO.MotoristaDAO;
-import entity.Motorista;
-import DAO.PassageiroDAO;
-
 import views.*;
-
 
 public class App {
 
