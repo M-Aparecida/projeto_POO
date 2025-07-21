@@ -101,10 +101,19 @@ public class CorridaView {
 
         limparTela();
         System.out.println("--- Aceitar Corrida ---");
+        int idCorrida = 0;
         Corrida.listarCorridasDisponiveis();
 
         System.out.print("\nDigite o ID da corrida que deseja aceitar (ou 0 para cancelar): ");
-        int idCorrida = Integer.parseInt(scanner.nextLine());
+        do {
+            try{
+                idCorrida = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("O valor deve ser inteiro, tente novamente: ");
+                continue;
+            }
+        } while (true);
 
         if (idCorrida == 0) return;
 
@@ -146,10 +155,9 @@ public class CorridaView {
             System.out.println("Corrida " + corrida.getIdCorrida() + " finalizada com sucesso!");
             esperar(2);
 
-            System.out.print("Deseja avaliar o passageiro desta corrida? (s/n): ");
-            if (scanner.nextLine().equalsIgnoreCase("s")) {
-                Passageiro.avaliarPassageiro(corrida.getPassageiroId());
-            }
+            System.out.print("--------------------------------------------: ");
+            System.out.println("Avaliar Pasasgeiro: ");
+            Passageiro.avaliarPassageiro(corrida.getPassageiroId());
         } else {
             System.out.println("Falha ao finalizar a corrida.");
             esperar(2);

@@ -80,7 +80,15 @@ public class PassageiroView {
         limparTela();
 
         System.out.print("Insira o seu nome: ");
-        p.setNome(scanner.nextLine());
+        do{
+            try {
+                p.setNome(scanner.nextLine());
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println("Insira um nome válido: ");
+                continue;
+            }
+        }while(true);
 
         do {
             limparTela();
