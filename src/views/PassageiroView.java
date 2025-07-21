@@ -134,7 +134,7 @@ public class PassageiroView {
                 scanner.nextLine();
                 esperar(2);
             } catch (IllegalArgumentException e) {
-                System.out.println("Insira uma idade válida (1-120)");
+                System.out.println("Insira uma idade válida (18-120)");
                 scanner.nextLine();
                 esperar(2);
             }
