@@ -7,9 +7,19 @@ import entity.Corrida;
 import entity.Motorista;
 import entity.Passageiro;
 
+/**
+ * Classe estática responsável por renderizar todas as telas (menus, prompts, etc.)
+ * relacionadas às operações do Passageiro no console.
+ * Gerencia o fluxo de login, cadastro, edição de perfil e acesso à área de corridas.
+ *
+ */
 public class PassageiroView {
     static Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Exibe o menu inicial da área do passageiro, oferecendo opções de login e cadastro.
+     * É o principal ponto de entrada para um passageiro interagir com o sistema.
+     */
     public static void menuPassageiroLoginCadastro() {
         Passageiro p = new Passageiro();
         boolean mostrarMenu = true;
@@ -44,6 +54,11 @@ public class PassageiroView {
         }
     }
 
+    /**
+     * Conduz o fluxo de login interativo para um passageiro.
+     * Pede e-mail e senha, valida as credenciais e, em caso de sucesso,
+     * redireciona para o menu principal do passageiro.
+     */
     public static void menuLoginPassageiro() {
         while (true) {
             limparTela();
@@ -75,6 +90,12 @@ public class PassageiroView {
         }
     }
 
+    /**
+     * Guia o usuário através do processo de cadastro de um novo passageiro.
+     * Coleta e valida todas as informações necessárias usando loops com try-catch.
+     *
+     * @return true se o cadastro no banco de dados for bem-sucedido, false caso contrário.
+     */
     public static boolean menuCadastroPassageiro() {
         Passageiro p = new Passageiro();
         limparTela();
@@ -158,6 +179,11 @@ public class PassageiroView {
         );
     }
 
+    /**
+     * Exibe o menu principal para um passageiro já logado no sistema.
+     *
+     * @param p O objeto Passageiro que representa o usuário logado.
+     */
     public static void menuInicialPassageiro(Passageiro p) {
         boolean mostrarMenu = true;
         while (true) {
@@ -189,6 +215,11 @@ public class PassageiroView {
         }
     }
 
+    /**
+     * Exibe um menu para editar as informações cadastrais do passageiro logado.
+     *
+     * @param p O objeto Passageiro logado cujos dados serão editados.
+     */
     public static void menuEditarCadastroPassageiro(Passageiro p) {
         boolean mostrarMenu = true;
         while (true) {
@@ -274,6 +305,11 @@ public class PassageiroView {
         }
     }
 
+    /**
+     * Exibe o histórico de corridas do passageiro e permite que ele escolha uma para avaliar o motorista.
+     *
+     * @param passageiroLogado O passageiro logado que está visualizando seu histórico.
+     */
     public static void menuHistoricoEAvaliacao(Passageiro passageiroLogado) {
         limparTela();
         int idCorrida = 0;
@@ -302,6 +338,13 @@ public class PassageiroView {
         avaliarMotoristaDaCorrida(idCorrida, passageiroLogado);
     }
 
+    /**
+     * Lida com a lógica de avaliação de um motorista de uma corrida específica.
+     * Realiza várias validações para garantir que o passageiro possa avaliar a corrida.
+     *
+     * @param idCorrida        O ID da corrida selecionada para avaliação.
+     * @param passageiroLogado O passageiro que está realizando a avaliação.
+     */
     private static void avaliarMotoristaDaCorrida(int idCorrida, Passageiro passageiroLogado) {
         Corrida corrida = Corrida.buscarCorrida(idCorrida);
 
@@ -336,12 +379,20 @@ public class PassageiroView {
         esperar(2);
     }
 
+    /**
+     * Limpa a tela do console imprimindo múltiplas linhas novas.
+     */
     public static void limparTela() {
         for (int i = 0; i < 50; i++) {
             System.out.println();
         }
     }
 
+    /**
+     * Pausa a execução do programa por um determinado número de segundos.
+     *
+     * @param segundos O número de segundos que o programa deve esperar.
+     */
     public static void esperar(int segundos) {
         try {
             Thread.sleep(segundos * 1000);

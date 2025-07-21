@@ -1,6 +1,12 @@
 package entity;
 
-// classe Pessoa e seus atributos
+/**
+ * Classe abstrata que representa uma Pessoa no sistema.
+ * Serve como base para classes mais específicas como {@link Motorista} e {@link Passageiro},
+ * provendo atributos e funcionalidades comuns a todos.
+ * Não pode ser instanciada diretamente.
+ *
+ */
 public abstract class Pessoa {
     private String nome;
     private String cpf;
@@ -12,12 +18,27 @@ public abstract class Pessoa {
     private int quantidadeCorridas;
     private float avaliacaoMedia;
 
+    /**
+     * Construtor padrão.
+     * Inicializa a quantidade de corridas e a avaliação média com zero.
+     */
     public Pessoa(){
         this.quantidadeCorridas = 0;
         this.avaliacaoMedia = 0.0f;
     }
 
-    // inicializa os atributos da classe
+    /**
+     * Construtor para inicializar os atributos de uma Pessoa.
+     * Geralmente invocado por construtores de subclasses via {@code super()}.
+     *
+     * @param nome     O nome completo.
+     * @param cpf      O CPF no formato "XXX.XXX.XXX-XX".
+     * @param email    O endereço de e-mail.
+     * @param telefone O número de telefone no formato "(XX) XXXXX-XXXX".
+     * @param idade    A idade (deve ser maior ou igual a 18).
+     * @param senha    A senha de acesso.
+     * @param genero   O gênero.
+     */
     public Pessoa(String nome, String cpf, String email, String telefone, int idade, String senha, String genero) {
         this.nome = nome;
         this.cpf = cpf;
@@ -30,12 +51,22 @@ public abstract class Pessoa {
         this.avaliacaoMedia = 0.0f;
     }
 
-    //valida email e senha
+    /**
+     * Valida as credenciais de login.
+     *
+     * @param email O e-mail fornecido para login.
+     * @param senha A senha fornecida para login.
+     * @return true se o e-mail e a senha corresponderem aos do objeto, false caso contrário.
+     */
     public boolean login(String email, String senha) {
         return this.email.equals(email) && this.senha.equals(senha);
     }
 
-    // recupera senha
+     /**
+     * Simula um processo de recuperação de senha, validando o e-mail.
+     *
+     * @param email O e-mail fornecido para iniciar a recuperação.
+     */
     public void recuperarSenha(String email) {
         if (this.email.equals(email)) {
             System.out.println("Email confirmado. Prossiga com a redefinição da senha.");
@@ -44,12 +75,18 @@ public abstract class Pessoa {
         }
     }
 
-    //exclui cadastro
+    /**
+     * Simula a validação de credenciais para exclusão de cadastro.
+     *
+     * @param cpf   O CPF fornecido para confirmação.
+     * @param senha A senha fornecida para confirmação.
+     * @return true se o CPF e a senha corresponderem, false caso contrário.
+     */
     public boolean excluirCadastro(String cpf, String senha) {
         return this.cpf.equals(cpf) && this.senha.equals(senha);
     }
 
-    // Getters e Setters para permitir acesso controlado aos atributos por outras classes
+    // --- GETTERS E SETTERS ---
     public String getNome() {
         return nome;
     }

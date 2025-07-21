@@ -4,6 +4,14 @@ import java.util.List;
 
 import DAO.CorridaDAO;
 
+/**
+ * Representa uma Corrida no sistema.
+ * Esta classe atua como uma entidade, contendo os dados de uma corrida,
+ * e também como uma classe de serviço, com métodos estáticos para interagir
+ * com o DAO e exibir informações no console.
+ * 
+ * @see CorridaDAO
+ */
 public class Corrida {
     private String origem;
     private String destino;
@@ -19,7 +27,24 @@ public class Corrida {
     private int veiculoId;
     private int status;
 
-    // exibir
+    /**
+     * Construtor completo para criar um objeto Corrida a partir de dados do banco.
+     * Usado principalmente para exibir corridas que já existem.
+     *
+     * @param origem       Local de partida da corrida.
+     * @param destino      Local de chegada da corrida.
+     * @param idCorrida    ID único da corrida.
+     * @param fatorTransito Fator de multiplicação do preço baseado no trânsito.
+     * @param preco        Preço final da corrida.
+     * @param data         Data em que a corrida ocorreu.
+     * @param passageiro   Nome do passageiro.
+     * @param motorista    Nome do motorista.
+     * @param veiculo      Modelo do veículo.
+     * @param passageiroId ID do passageiro.
+     * @param motoristaId  ID do motorista.
+     * @param veiculoId    ID do veículo.
+     * @param status       Código de status da corrida (1: Solicitada, 2: Aceita, etc.).
+     */
     public Corrida(String origem, String destino, int idCorrida, int fatorTransito, float preco, String data,
             String passageiro, String motorista, String veiculo, int passageiroId, int motoristaId, int veiculoId,
             int status) {
@@ -38,7 +63,6 @@ public class Corrida {
         this.status = status;
     }
 
-    //inserir
     public Corrida(String origem, String destino, int fatorTransito, float preco, String data, String passageiro,
             String motorista, String veiculo, int passageiroId, int motoristaId, int veiculoId, int status) {
         this.origem = origem;
@@ -55,6 +79,19 @@ public class Corrida {
         this. status = status;
     }
 
+    /**
+     * Construtor para criar uma nova instância de Corrida antes de persistir no banco de dados.
+     *
+     * @param origem       Local de partida.
+     * @param destino      Local de chegada.
+     * @param fatorTransito Fator de trânsito.
+     * @param preco        Preço calculado.
+     * @param data         Data da solicitação.
+     * @param passageiroId ID do passageiro solicitante.
+     * @param motoristaId  ID do motorista (pode ser 0 ou null inicialmente).
+     * @param veiculoId    ID do veículo (pode ser 0 ou null inicialmente).
+     * @param status       Status inicial da corrida (geralmente 1 para 'Solicitada').
+     */
     public Corrida(String origem, String destino, int fatorTransito, float preco, String data, 
         int passageiroId, int motoristaId, int veiculoId, int status) {
         this.origem = origem;
@@ -68,6 +105,9 @@ public class Corrida {
         this.status = status;
     }
 
+    /**
+     * Busca todas as corridas no banco de dados e as exibe em uma tabela no console.
+     */
     public static void listarCorridas() {
         CorridaDAO dao = new CorridaDAO();
         List<Corrida> corridas = dao.listarTodasCorridas();
@@ -90,6 +130,12 @@ public class Corrida {
         }
     }
 
+    /**
+     * Busca corridas dentro de um período específico e as exibe em uma tabela no console.
+     *
+     * @param data1 Data de início do período (formato 'AAAA-MM-DD').
+     * @param data2 Data de fim do período (formato 'AAAA-MM-DD').
+     */
     public static void listarCorridas(String data1, String data2) {
         CorridaDAO dao = new CorridaDAO();
         List<Corrida> corridas = dao.listarCorridasPorPeriodo(data1, data2);
@@ -117,6 +163,11 @@ public class Corrida {
         }
     }
 
+    /**
+     * Exibe o histórico de corridas de um motorista, identificado pela CNH.
+     *
+     * @param cnh O número da CNH do motorista.
+     */
     public static void historicoDeCorridas(long cnh) {
     CorridaDAO dao = new CorridaDAO();
         List<Corrida> corridas = dao.listarCorridasPorCNH(cnh);
@@ -144,6 +195,11 @@ public class Corrida {
         }
     }
 
+    /**
+     * Exibe o histórico de corridas de um passageiro, identificado pelo CPF.
+     *
+     * @param cpf O CPF do passageiro.
+     */
     public static void historicoDeCorridas(String cpf) {
         CorridaDAO dao = new CorridaDAO();
         List<Corrida> corridas = dao.listarCorridasPorCPF(cpf);
@@ -172,6 +228,12 @@ public class Corrida {
         }
     }
 
+    /**
+     * Busca uma corrida pelo seu ID e a retorna.
+     *
+     * @param idCorrida O ID da corrida a ser buscada.
+     * @return O objeto Corrida se encontrado, caso contrário, null.
+     */
     public static Corrida buscarCorrida(int idCorrida) {
         CorridaDAO dao = new CorridaDAO();
         Corrida corrida = dao.buscarCorrida(idCorrida);
@@ -183,6 +245,9 @@ public class Corrida {
         return corrida;
     }
 
+    /**
+     * Busca e exibe todas as corridas disponíveis (status 1) em uma tabela no console.
+     */
     public static void listarCorridasDisponiveis() {
         CorridaDAO dao = new CorridaDAO();
         List<Corrida> corridas = dao.listarCorridasDisponiveis();
@@ -209,6 +274,14 @@ public class Corrida {
         }
     }
 
+    /**
+     * Modifica um campo específico desta instância da corrida no banco de dados.
+     * A alteração só é permitida se o status da corrida for 1 (Solicitada).
+     *
+     * @param campo     O nome do campo a ser alterado (ex: "origem", "destino", "preco").
+     * @param novoValor O novo valor para o campo, como uma String.
+     * @return true se a modificação for bem-sucedida, false caso contrário.
+     */
     public boolean modificarValoresCorrida(String campo, String novoValor) {
         CorridaDAO dao = new CorridaDAO();
 
@@ -262,6 +335,15 @@ public class Corrida {
         }
     }
 
+    /**
+     * Cria uma nova corrida com valores aleatórios para preço e fator de trânsito
+     * e a insere no banco de dados.
+     *
+     * @param origem                 Local de partida.
+     * @param destino                Local de chegada.
+     * @param passageiroSolicitante O objeto Passageiro que está solicitando a corrida.
+     * @return A instância da Corrida criada e persistida, com o ID preenchido.
+     */
     public static Corrida realizarCorrida(String origem, String destino, Passageiro passageiroSolicitante) {
         float preco = (float) (20 + Math.random() * 30);
         int fatorTransito = (int) (1 + Math.random() * 5);
@@ -282,16 +364,28 @@ public class Corrida {
         return dao.inserirCorrida(novaCorrida);
     }
 
+    /**
+     * Altera o status desta corrida para 4 (Finalizada) no banco de dados.
+     *
+     * @return true se a operação for bem-sucedida, false caso contrário.
+     */
     public boolean terminarCorrida() {
         CorridaDAO dao = new CorridaDAO();
         return dao.alterarStatus(4, this.idCorrida);
     }
 
+    /**
+     * Altera o status desta corrida para 5 (Cancelada) no banco de dados.
+     *
+     * @return true se a operação for bem-sucedida, false caso contrário.
+     */
     public boolean cancelarCorrida() {
         CorridaDAO dao = new CorridaDAO();
         return dao.alterarStatus(5, this.idCorrida);
     }
     
+    // --- GETTERS E SETTERS ---
+
     public String getOrigem() {
         return origem;
     }

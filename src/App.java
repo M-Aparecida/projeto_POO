@@ -2,14 +2,27 @@ import java.util.Scanner;
 
 import views.*;
 
+/**
+ * Classe principal que serve como ponto de entrada para a aplicação "XCX UBER".
+ * Sua responsabilidade é iniciar o programa e exibir o menu inicial de boas-vindas,
+ * permitindo que o usuário escolha entre os módulos de Passageiro ou Motorista.
+ */
 public class App {
 
     static Scanner scanner = new Scanner(System.in);
-
+    /**
+     * O método principal que inicia a execução da aplicação.
+     *
+     * @param args Argumentos de linha de comando (não utilizados nesta aplicação).
+     */
     public static void main(String[] args) {
         telaBoasVindas();    
     }
-
+    /**
+     * Exibe a tela de boas-vindas e o menu principal da aplicação.
+     * Este método contém o loop principal que direciona o usuário para as
+     * áreas de Passageiro ou Motorista, ou encerra o programa.
+     */
     public static void telaBoasVindas() {
     boolean mostrarMenu = true;
 
@@ -43,6 +56,10 @@ public class App {
     }
 }
 
+    /**
+     * Limpa a tela do console imprimindo múltiplas linhas novas.
+     * Utilizado para melhorar a experiência do usuário entre as telas.
+     */
     public static void limparTela() {
         for (int i = 0; i < 50; i++) {
             System.out.println();

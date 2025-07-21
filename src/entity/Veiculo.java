@@ -4,6 +4,12 @@ import java.util.stream.Collectors;
 
 import DAO.VeiculoDAO;
 
+/**
+ * Representa um Veículo no sistema.
+ * Esta classe armazena os dados de um veículo, como placa, modelo e capacidade,
+ * e também gerencia seu estado (se está em uso ou não).
+ *
+ */
 public class Veiculo{
     private int idVeiculo;
     private String placa;
@@ -14,7 +20,18 @@ public class Veiculo{
     private static int quantidadeVeiculos;
     private int id_motorista;
 
-
+    /**
+     * Construtor para criar uma instância de Veiculo.
+     * Realiza uma validação inicial dos dados e atualiza a contagem estática de veículos.
+     *
+     * @param idVeiculo    O ID único do veículo.
+     * @param placa        A placa do veículo.
+     * @param modelo       O modelo do veículo.
+     * @param ano          O ano de fabricação do veículo.
+     * @param capacidade   A capacidade de passageiros.
+     * @param id_motorista O ID do motorista associado a este veículo.
+     * @throws IllegalArgumentException se placa, modelo ou ano forem inválidos.
+     */
     public Veiculo(int idVeiculo, String placa, String modelo, int ano, int capacidade, int id_motorista) throws IllegalArgumentException {
         if (placa == null || modelo == null || ano <= 0) {
             throw new IllegalArgumentException("Dados inválidos para criação do veículo.");
@@ -111,7 +128,14 @@ public class Veiculo{
     }
 
     
-
+    /**
+     * Modifica o modelo e a capacidade desta instância de veículo no banco de dados.
+     * Se a operação no banco for bem-sucedida, os atributos do objeto também são atualizados.
+     *
+     * @param novoModelo      O novo modelo a ser atribuído.
+     * @param novaCapacidade  A nova capacidade de passageiros.
+     * @return true se a modificação for bem-sucedida, false caso contrário.
+     */
     public boolean modificarValoresVeiculo(String novoModelo, int novaCapacidade) {
         VeiculoDAO dao = new VeiculoDAO();
         boolean sucesso = dao.modificarValoresVeiculo(this.placa, this.modelo, novoModelo, novaCapacidade);
@@ -122,7 +146,12 @@ public class Veiculo{
         return sucesso;
     }
 
-     public boolean deletarVeiculo() {
+    /**
+     * Deleta esta instância de veículo do banco de dados, usando sua placa como identificador.
+     *
+     * @return true se a exclusão for bem-sucedida, false caso contrário.
+     */
+    public boolean deletarVeiculo() {
         VeiculoDAO dao = new VeiculoDAO();
         return dao.deletarVeiculo(this.placa);
     }
@@ -131,6 +160,11 @@ public class Veiculo{
         return this;
     }
 
+    /**
+     * Lista todos os veículos disponíveis (que não estão em uso).
+     *
+     * @return Uma lista de objetos Veiculo que não estão marcados como "em uso".
+     */
     public static List<Veiculo> listarVeiculos() {
         VeiculoDAO dao = new VeiculoDAO();
         return dao.listarVeiculos().stream()
@@ -138,12 +172,25 @@ public class Veiculo{
             .collect(Collectors.toList());
     }
 
+    /**
+     * Busca um veículo disponível pela placa.
+     *
+     * @param placa A placa do veículo a ser buscado.
+     * @return O objeto Veiculo se for encontrado e não estiver em uso, caso contrário, retorna null.
+     */
     public static Veiculo buscar(String placa) {
         VeiculoDAO dao = new VeiculoDAO();
         Veiculo v = dao.buscarPorPlaca(placa);
         return (v != null && !v.isEstaEmUso()) ? v : null;
     }
 
+    /**
+     * Busca um veículo disponível pelo modelo e ano.
+     *
+     * @param modelo O modelo do veículo.
+     * @param ano    O ano de fabricação do veículo.
+     * @return O objeto Veiculo se for encontrado e não estiver em uso, caso contrário, retorna null.
+     */
     public static Veiculo buscar(String modelo, int ano) {
         VeiculoDAO dao = new VeiculoDAO();
         Veiculo v = dao.buscarPorModeloEAno(modelo, ano);

@@ -7,19 +7,46 @@ import java.util.Scanner;
 
 import DAO.MotoristaDAO;
 
+/**
+ * Representa um Motorista no sistema, estendendo a classe base Pessoa.
+ * Esta classe contém atributos e métodos específicos de um motorista, como o número da CNH e status de disponibilidade.
+ * Também inclui métodos de serviço estáticos e de instância que interagem com a camada DAO.
+ * 
+ * @see Pessoa
+ * @see MotoristaDAO
+ */
 public class Motorista extends Pessoa {
     private long numeroCnh;
     private int idMotorista;
     private boolean disponivel;
 
+     /**
+     * Construtor padrão.
+     * Inicializa um novo motorista com valores padrão: disponível (true), 0 corridas e avaliação 0.0.
+     */
     public Motorista(){
         this.disponivel = true;
         setQuantidadeCorridas(0);
         setAvaliacaoMedia(0.0f);
     }
 
-    //construtor p exibir
-   public Motorista( int idMotorista,String nome, String cpf, String email, String telefone, String senha, String genero,
+   /**
+     * Construtor para criar um objeto Motorista a partir de dados existentes (ex: do banco de dados).
+     *
+     * @param idMotorista          O ID único do motorista.
+     * @param nome                 O nome do motorista.
+     * @param cpf                  O CPF do motorista.
+     * @param email                O email do motorista.
+     * @param telefone             O telefone do motorista.
+     * @param senha                A senha do motorista.
+     * @param genero               O gênero do motorista.
+     * @param idade                A idade do motorista.
+     * @param numeroCnh            O número da CNH do motorista.
+     * @param disponivel           O status de disponibilidade do motorista.
+     * @param quantidadeCorridas   O total de corridas concluídas.
+     * @param avaliacaoMedia       A avaliação média do motorista.
+     */
+    public Motorista( int idMotorista,String nome, String cpf, String email, String telefone, String senha, String genero,
                  int idade, long numeroCnh, boolean disponivel, int quantidadeCorridas, float avaliacaoMedia) {
     super(nome, cpf, email, telefone, idade, senha, genero);
     this.idMotorista = idMotorista;
@@ -30,16 +57,32 @@ public class Motorista extends Pessoa {
 }
 
 
-    //construtor p inserir
+    /**
+     * Construtor para criar uma nova instância de Motorista antes de cadastrar no banco.
+     *
+     * @param nome        O nome do motorista.
+     * @param cpf         O CPF do motorista.
+     * @param email       O email do motorista.
+     * @param telefone    O telefone do motorista.
+     * @param senha       A senha do motorista.
+     * @param genero      O gênero do motorista.
+     * @param idade       A idade do motorista.
+     * @param numeroCnh   O número da CNH do motorista.
+     */
     public Motorista(String nome, String cpf, String email, String telefone, String senha, String genero, int idade,
             long numeroCnh) {
         super(nome, cpf, email, telefone, idade, senha, genero);
         this.numeroCnh = numeroCnh;
         this.disponivel = true; 
-        this.setQuantidadeCorridas(0); // começa com zero corridas e avaliação tbm eh igual a 0
+        this.setQuantidadeCorridas(0);
         this.setAvaliacaoMedia(0.0f); 
     }
     
+    /**
+     * Busca e retorna os dados completos desta instância de motorista a partir do banco de dados.
+     *
+     * @return Um novo objeto Motorista com todos os dados atualizados do banco, ou null se o ID não estiver definido.
+     */
     public Motorista getDadosMotorista() {
         if (this.idMotorista == 0) {
             System.out.println("Passageiro sem ID definido.");
@@ -49,8 +92,9 @@ public class Motorista extends Pessoa {
         MotoristaDAO dao = new MotoristaDAO();
         return dao.buscarPorId(this.idMotorista);
     }
+    
     public long getNumeroCnh() {
-        return numeroCnh;
+        return numeroCnh;   
     }
 
     public void setNumeroCnh(long numeroCnh) {
@@ -79,6 +123,11 @@ public class Motorista extends Pessoa {
         this.disponivel = disponivel;
     }
     
+    /**
+     * Método estático de fábrica para criar e cadastrar um novo motorista.
+     *
+     * @return true se o motorista foi cadastrado com sucesso no banco, false caso contrário.
+     */
     public static boolean cadastroMotorista( String nome, String cpf, String email, String telefone, String senha, String genero, int idade, long numeroCnh){
         Motorista motorista = new Motorista(nome, cpf, email, telefone, senha, genero, idade, numeroCnh);
 
@@ -90,6 +139,9 @@ public class Motorista extends Pessoa {
         }
     }
 
+    /**
+     * Busca todos os motoristas no banco de dados e os exibe em uma tabela no console.
+     */
      public static void listarMotoristas(){
         MotoristaDAO dao = new MotoristaDAO();
         List<Motorista> motoristas = dao.listarMotoristas();
@@ -108,6 +160,13 @@ public class Motorista extends Pessoa {
         }
     }
 
+    /**
+     * Atualiza o status local do motorista para indisponível.
+     * Nota: Esta alteração ocorre apenas em memória e não é persistida no banco de dados por este método.
+     *
+     * @param corridaID O ID da corrida que está sendo aceita (atualmente não utilizado no método).
+     * @return true se o motorista estava disponível, false caso contrário.
+     */
     public boolean aceitarCorrida(int corridaID) {
         if (!disponivel) {
             return false;
@@ -116,12 +175,25 @@ public class Motorista extends Pessoa {
         return true;
     }
     
+    /**
+     * Busca um motorista no banco de dados pelo seu e-mail.
+     *
+     * @param email O e-mail do motorista a ser buscado.
+     * @return O objeto Motorista se encontrado, caso contrário, retorna null.
+     */
     public static Motorista buscarMotorista(String email){
         MotoristaDAO dao = new MotoristaDAO();
         Motorista m = dao.buscarPorEmail(email);
         return m;
     }
     
+    /**
+     * Modifica um campo específico desta instância de motorista no banco de dados.
+     *
+     * @param op             O campo a ser alterado (ex: "nome", "email", "telefone", "senha").
+     * @param novaInformacao O novo valor para o campo.
+     * @return true se a modificação for bem-sucedida, false caso contrário.
+     */
     public boolean modificarValoresMotorista(String op, String novaInformacao){
         MotoristaDAO dao = new MotoristaDAO();
         switch (op.toLowerCase()) {
@@ -139,6 +211,11 @@ public class Motorista extends Pessoa {
         }
     }
 
+    /**
+     * Método interativo para coletar uma avaliação para um motorista via console e persistí-la.
+     *
+     * @param idMotorista O ID do motorista a ser avaliado.
+     */
     public static void avaliarMotorista(int idMotorista){
         Scanner ent = new Scanner(System.in);
         float avaliacao = 0;
@@ -162,12 +239,24 @@ public class Motorista extends Pessoa {
         }while(true);
     }
 
+    /**
+     * Gera um relatório de faturamento total para este motorista.
+     *
+     * @return Um Map contendo as estatísticas de faturamento.
+     */
     public Map<String, Number> relatorioFaturamento(){
         MotoristaDAO dao = new MotoristaDAO();
         Map<String, Number> relatorio = dao.gerarRelatorioFaturamento(this.getIdMotorista());
         return relatorio;
     }
 
+    /**
+     * Gera um relatório de faturamento para este motorista dentro de um período específico.
+     *
+     * @param dataInicio A data de início do período.
+     * @param dataFim    A data de fim do período.
+     * @return Um Map contendo as estatísticas de faturamento para o período.
+     */
     public Map<String, Number> relatorioFaturamento( String dataInicio, String dataFim){
         MotoristaDAO dao = new MotoristaDAO();
         Map<String, Number> relatorio = dao.gerarRelatorioFaturamentoPorPeriodo(this.getIdMotorista(), dataInicio, dataFim);;

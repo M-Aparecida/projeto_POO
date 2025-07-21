@@ -10,8 +10,17 @@ import java.util.List;
 import conexao.Conexao;
 import entity.Veiculo;
 
+/**
+ * Data Access Object (DAO) para a entidade Veiculo.
+ * Esta classe gerencia todas as operações de banco de dados
+ * (CRUD - Criar, Ler, Atualizar, Deletar) para a tabela 'veiculo'.
+ */
 public class VeiculoDAO {
-
+    /**
+     * Busca e retorna uma lista com todos os veículos cadastrados no sistema.
+     *
+     * @return Uma lista de objetos Veiculo. Retorna uma lista vazia se não houver nenhum.
+     */
     public List<Veiculo> listarVeiculos(){
         String sql = "SELECT * FROM veiculo";
 
@@ -32,6 +41,11 @@ public class VeiculoDAO {
         return veiculos;
     }
 
+     /**
+     * Conta o número total de veículos cadastrados no banco de dados.
+     *
+     * @return O número total de veículos como um inteiro, ou -1 em caso de erro.
+     */
     public int qtd_veiculos(){
         String sql = "SELECT COUNT(*) FROM veiculo";
         int qtd_veiculos = 0;
@@ -50,6 +64,15 @@ public class VeiculoDAO {
         }
     }
 
+    /**
+     * Modifica o modelo e a capacidade de um veículo específico, identificado pela placa e modelo atuais.
+     *
+     * @param placa       A placa do veículo a ser modificado.
+     * @param modelo      O modelo atual do veículo.
+     * @param novoModelo  O novo modelo a ser atribuído.
+     * @param capacidade  A nova capacidade de passageiros do veículo.
+     * @return true se a atualização for bem-sucedida (pelo menos uma linha afetada), false caso contrário.
+     */
     public boolean modificarValoresVeiculo(String placa, String modelo, String novoModelo, int capacidade){
         String sql = "UPDATE veiculo SET modelo = ?, capacidade = ? WHERE placa = ? AND modelo = ?";
         
@@ -69,6 +92,12 @@ public class VeiculoDAO {
         }
     }
 
+    /**
+     * Deleta um veículo do banco de dados com base na sua placa.
+     *
+     * @param placa A placa do veículo a ser deletado.
+     * @return true se a exclusão for bem-sucedida (pelo menos uma linha afetada), false caso contrário.
+     */
     public boolean deletarVeiculo(String placa){
         String sql = "DELETE FROM veiculo WHERE placa = ?";
         
@@ -83,6 +112,12 @@ public class VeiculoDAO {
         }
     }
 
+    /**
+     * Busca um veículo específico pela sua placa.
+     *
+     * @param placa A placa do veículo a ser buscado.
+     * @return Um objeto Veiculo se encontrado, caso contrário, retorna null.
+     */
     public Veiculo buscarPorPlaca(String placa){
         String sql = "SELECT * FROM veiculo WHERE placa = ?";
 
@@ -102,6 +137,14 @@ public class VeiculoDAO {
         return null;
     }
 
+     /**
+     * Busca um veículo pelo seu modelo e ano.
+     * Nota: Se houver múltiplos veículos com o mesmo modelo e ano, este método retornará apenas o primeiro encontrado.
+     *
+     * @param modelo O modelo do veículo.
+     * @param ano    O ano de fabricação do veículo.
+     * @return Um objeto Veiculo correspondente ao primeiro resultado da busca, ou null se nenhum for encontrado.
+     */
     public Veiculo buscarPorModeloEAno(String modelo, int ano){
         String sql = "SELECT * FROM veiculo WHERE modelo = ? AND ano = ?";
 
@@ -122,6 +165,12 @@ public class VeiculoDAO {
         return null;
     }
 
+    /**
+     * Busca os dados de um veículo pelo seu ID único.
+     *
+     * @param id O ID do veículo a ser buscado.
+     * @return Um objeto Veiculo se encontrado, caso contrário, retorna null.
+     */
     public Veiculo getDadosVeiculo(int id){
         String sql = "SELECT * FROM veiculo WHERE id_veiculo = ?";
 

@@ -14,8 +14,18 @@ import conexao.Conexao;
 import entity.Corrida;
 
 
-
+/**
+ * Data Access Object (DAO) para a entidade Corrida.
+ * Esta classe encapsula toda a lógica de acesso ao banco de dados
+ * (operações de CRUD) para a tabela 'corrida'.
+ */
 public class CorridaDAO {
+    /**
+     * Busca e retorna uma lista com todas as corridas registradas no banco de dados.
+     * Inclui informações detalhadas do passageiro, motorista e veículo através de JOINs.
+     *
+     * @return Uma List<Corrida> contendo todas as corridas. Retorna uma lista vazia se não houver nenhuma.
+     */
     public List<Corrida> listarTodasCorridas(){
         List<Corrida> corridas = new ArrayList<>();
         String sql = """
@@ -69,6 +79,14 @@ public class CorridaDAO {
         return corridas;
     }
 
+    /**
+     * Filtra as corridas realizadas dentro de um intervalo de datas.
+     * A consulta considera a data final como exclusiva (menor que o dia seguinte).
+     *
+     * @param data1 A data de início do período (formato 'AAAA-MM-DD').
+     * @param data2 A data de fim do período (formato 'AAAA-MM-DD').
+     * @return Uma List<Corrida> com as corridas encontradas no período especificado.
+     */
     public List<Corrida> listarCorridasPorPeriodo(String data1, String data2) {
         List<Corrida> corridas = new ArrayList<>();
         String sql = """
@@ -127,6 +145,14 @@ public class CorridaDAO {
         return corridas;
     }
 
+
+    /**
+     * Busca o histórico de corridas de um motorista específico, identificado pelo número da CNH.
+     * Os resultados são ordenados pela data da corrida, da mais recente para a mais antiga.
+     *
+     * @param cnh O número da CNH do motorista a ser pesquisado.
+     * @return Uma List<Corrida> com as corridas associadas à CNH fornecida.
+     */
     public List<Corrida> listarCorridasPorCNH(long cnh) {
         List<Corrida> corridas = new ArrayList<>();
         String sql = """
@@ -184,6 +210,13 @@ public class CorridaDAO {
         return corridas;
     }
 
+    /**
+     * Busca o histórico de corridas finalizadas (status = 4) de um passageiro específico.
+     * A busca é feita pelo CPF do passageiro.
+     *
+     * @param cpf O CPF do passageiro para buscar o histórico de corridas.
+     * @return Uma List<Corrida> com as corridas finalizadas do passageiro.
+     */
     public List<Corrida> listarCorridasPorCPF(String cpf) {
         List<Corrida> corridas = new ArrayList<>();
         String sql = """
@@ -241,6 +274,14 @@ public class CorridaDAO {
         return corridas;
     }
 
+    /**
+     * Busca uma única corrida pelo seu ID único.
+     * Utiliza LEFT JOIN para motorista e veículo, pois a corrida pode estar em um estado
+     * onde ainda não foram associados.
+     *
+     * @param idCorrida O identificador único da corrida a ser buscada.
+     * @return Um objeto Corrida se a corrida for encontrada, ou null caso contrário.
+     */
     public Corrida buscarCorrida(int idCorrida) {
         String sql = """
             SELECT 
@@ -300,6 +341,12 @@ public class CorridaDAO {
         return null;
     }
 
+    /**
+     * Retorna uma lista de todas as corridas que estão com status 1 (Solicitada/Disponível),
+     * ou seja, que aguardam um motorista aceitar.
+     *
+     * @return Uma List<Corrida> com as corridas disponíveis.
+     */
     public List<Corrida> listarCorridasDisponiveis() {
         List<Corrida> corridas = new ArrayList<>();
         String sql = """
@@ -360,6 +407,13 @@ public class CorridaDAO {
         return corridas;
     }
 
+    /**
+     * Altera a origem de uma corrida específica.
+     *
+     * @param novaOrigem A nova localização de origem.
+     * @param idCorrida O ID da corrida a ser modificada.
+     * @return true se a alteração foi bem-sucedida, false caso contrário.
+     */
     public boolean alterarOrigem(String novaOrigem, int idCorrida) {
         String sql = "UPDATE corrida SET origem = ? WHERE id_corrida = ?";
         try (Connection conn = Conexao.getConnection();
@@ -373,6 +427,13 @@ public class CorridaDAO {
         }
     }
 
+    /**
+     * Altera o destino de uma corrida específica.
+     *
+     * @param novoDestino O novo destino da corrida.
+     * @param idCorrida   O ID da corrida a ser modificada.
+     * @return true se a alteração foi bem-sucedida, false caso contrário.
+     */
     public boolean alterarDestino(String novoDestino, int idCorrida) {
         String sql = "UPDATE corrida SET destino = ? WHERE id_corrida = ?";
         try (Connection conn = Conexao.getConnection();
@@ -386,6 +447,13 @@ public class CorridaDAO {
         }
     }
 
+    /**
+     * Altera o preço de uma corrida específica.
+     *
+     * @param novoPreco O novo valor da corrida.
+     * @param idCorrida O ID da corrida a ser modificada.
+     * @return true se a alteração foi bem-sucedida, false caso contrário.
+     */
     public boolean alterarPreco(float novoPreco, int idCorrida) {
         String sql = "UPDATE corrida SET preco = ? WHERE id_corrida = ?";
         try (Connection conn = Conexao.getConnection();
@@ -399,6 +467,13 @@ public class CorridaDAO {
         }
     }
 
+    /**
+     * Altera o fator de trânsito de uma corrida específica.
+     *
+     * @param novoFator O novo fator de trânsito.
+     * @param idCorrida O ID da corrida a ser modificada.
+     * @return true se a alteração foi bem-sucedida, false caso contrário.
+     */
     public boolean alterarFatorTransito(int novoFator, int idCorrida) {
         String sql = "UPDATE corrida SET fator_transito = ? WHERE id_corrida = ?";
         try (Connection conn = Conexao.getConnection();
@@ -412,6 +487,13 @@ public class CorridaDAO {
         }
     }
 
+    /**
+     * Altera a data de uma corrida específica.
+     *
+     * @param novaData  A nova data da corrida (formato 'AAAA-MM-DD').
+     * @param idCorrida O ID da corrida a ser modificada.
+     * @return true se a alteração foi bem-sucedida, false caso contrário.
+     */
     public boolean alterarDataCorrida(String novaData, int idCorrida) {
         String sql = "UPDATE corrida SET data_corrida = ? WHERE id_corrida = ?";
         try (Connection conn = Conexao.getConnection();
@@ -425,6 +507,13 @@ public class CorridaDAO {
         }
     }
 
+    /**
+     * Associa um motorista a uma corrida específica.
+     *
+     * @param motoristaId O ID do motorista a ser associado à corrida.
+     * @param idCorrida   O ID da corrida a ser modificada.
+     * @return true se a alteração foi bem-sucedida, false caso contrário.
+     */
     public boolean alterarMotoristaId(int motoristaId, int idCorrida) {
         String sql = "UPDATE corrida SET motorista_id = ? WHERE id_corrida = ?";
         try (Connection conn = Conexao.getConnection();
@@ -438,6 +527,14 @@ public class CorridaDAO {
         }
     }
 
+    /**
+     * Altera o status de uma corrida específica.
+     * Status: 1 (Solicitada), 2 (Aceita), 3 (Em Andamento), 4 (Finalizada).
+     *
+     * @param novoStatus O novo código de status para a corrida.
+     * @param idCorrida  O ID da corrida a ser modificada.
+     * @return true se a alteração foi bem-sucedida, false caso contrário.
+     */
     public boolean alterarStatus(int novoStatus, int idCorrida) {
         String sql = "UPDATE corrida SET status = ? WHERE id_corrida = ?";
         try (Connection conn = Conexao.getConnection();
@@ -451,6 +548,14 @@ public class CorridaDAO {
         }
     }
 
+     /**
+     * Insere uma nova corrida no banco de dados.
+     * Inicialmente, motorista_id e veiculo_id são nulos, pois a corrida é criada como "solicitada".
+     * O ID gerado pelo banco de dados é atribuído de volta ao objeto Corrida.
+     *
+     * @param novaCorrida O objeto Corrida a ser inserido, com os dados iniciais preenchidos.
+     * @return O objeto Corrida com o ID preenchido em caso de sucesso, ou null em caso de falha.
+     */
     public Corrida inserirCorrida(Corrida novaCorrida) {
         String sql = """
             INSERT INTO corrida 
@@ -489,7 +594,12 @@ public class CorridaDAO {
         return null;
     }
 
-
+    /**
+     * Verifica se um motorista possui uma corrida ativa (status 2 'Aceita' ou 3 'Em Andamento').
+     *
+     * @param idMotorista O ID do motorista a ser verificado.
+     * @return O objeto Corrida ativo se existir, ou null caso o motorista não tenha corridas ativas.
+     */
     public Corrida buscarCorridaAtivaPorMotorista(int idMotorista) {
         String sql = """
             SELECT 
@@ -523,6 +633,15 @@ public class CorridaDAO {
         }
         return null;
     }
+    
+    /**
+     * Lista as corridas finalizadas (status = 4) por um motorista específico dentro de um período.
+     *
+     * @param idMotorista O ID do motorista.
+     * @param dataInicio  A data inicial do filtro (formato 'AAAA-MM-DD').
+     * @param dataFim     A data final do filtro (formato 'AAAA-MM-DD').
+     * @return Uma lista de corridas que atendem aos critérios de busca.
+     */
     public List<Corrida> listarCorridasPorMotoristaEPeriodo(int idMotorista, String dataInicio, String dataFim) {
         List<Corrida> corridas = new ArrayList<>();
         String sql = """

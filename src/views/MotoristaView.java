@@ -9,9 +9,19 @@ import entity.Motorista;
 import entity.Passageiro;
 import DAO.PassageiroDAO;
 
+/**
+ * Classe estática responsável por renderizar todas as telas (menus, prompts, etc.)
+ * relacionadas às operações do Motorista no console.
+ * Gerencia o fluxo de login, cadastro, edição de perfil e acesso a outras áreas do sistema.
+ *
+ */
 public class MotoristaView {
         static Scanner scanner = new Scanner(System.in);
 
+        /**
+        * Exibe o menu inicial da área do motorista, oferecendo opções de login e cadastro.
+        * É o principal ponto de entrada para um motorista interagir com o sistema.
+        */
         public static void menuMotorista() {
         boolean mostrarMenu = true;    
         Motorista m = new Motorista();               
@@ -42,6 +52,12 @@ public class MotoristaView {
         }
 
     }
+    
+    /**
+     * Conduz o fluxo de login interativo para um motorista.
+     * Pede e-mail and senha, valida as credenciais e, em caso de sucesso,
+     * redireciona para o menu principal do motorista.
+     */
     public static void menuLoginMotorista() {
     MotoristaDAO dao = new MotoristaDAO(); 
 
@@ -74,7 +90,12 @@ public class MotoristaView {
     }
 }
 
-
+/**
+     * Guia o usuário através do processo de cadastro de um novo motorista.
+     * Coleta e valida todas as informações necessárias.
+     *
+     * @return true se o cadastro no banco de dados for bem-sucedido, false caso contrário.
+     */
 public static boolean menuCadastroMotorista(){
         Motorista motorista = new Motorista();
 
@@ -170,7 +191,11 @@ public static boolean menuCadastroMotorista(){
             motorista.getSenha(),motorista.getGenero(), motorista.getIdade(), motorista.getNumeroCnh());
     }
 
-
+    /**
+     * Exibe o menu principal para um motorista já logado no sistema.
+     *
+     * @param m O objeto Motorista que representa o usuário logado.
+     */
     public static void menuInicialMotorista(Motorista m) {
         boolean mostrarMenu = true;
         while (true) {
@@ -216,12 +241,21 @@ public static boolean menuCadastroMotorista(){
             }
         }
     }
- public static void limparTela() {
+ 
+    /**
+     * Limpa a tela do console imprimindo múltiplas linhas novas.
+     */
+    public static void limparTela() {
         for (int i = 0; i < 50; i++) {
             System.out.println();
         }
     }
 
+    /**
+     * Pausa a execução do programa por um determinado número de segundos.
+     *
+     * @param segundos O número de segundos que o programa deve esperar.
+     */
      public static void esperar(int segundos) {
         try {
             Thread.sleep(segundos * 1000);
@@ -231,6 +265,11 @@ public static boolean menuCadastroMotorista(){
         }
     }
 
+    /**
+     * Exibe o menu de relatórios de faturamento para o motorista logado.
+     *
+     * @param m O objeto Motorista logado.
+     */
     private static void menuRelatorioFaturamento(Motorista m) {
         while (true) {
             limparTela();
@@ -293,6 +332,11 @@ public static boolean menuCadastroMotorista(){
         }
     }
 
+    /**
+     * Formata e exibe os dados de um relatório de faturamento no console.
+     *
+     * @param relatorio Um Map contendo as chaves "corridasFinalizadas", "corridasCanceladas", e "faturamentoTotal".
+     */
     private static void exibirRelatorio(Map<String, Number> relatorio) {
         if (relatorio != null) {
             System.out.println("---------------------------------");
@@ -305,6 +349,11 @@ public static boolean menuCadastroMotorista(){
         }
     }
 
+    /**
+     * Exibe um menu para editar as informações cadastrais do motorista logado.
+     *
+     * @param m O objeto Motorista logado cujos dados serão editados.
+     */
     public static void menuEditarCadastroMotorista(Motorista m) {
         boolean mostrarMenu = true;
         while (mostrarMenu) {
@@ -382,7 +431,9 @@ public static boolean menuCadastroMotorista(){
             }
         }
     
-
+        /**
+         * Conduz o fluxo para buscar um motorista por e-mail e exibir seus detalhes.
+         */
         public static void menuBuscarMotorista(Motorista M) {
         System.out.println("\n=== Buscar Motorista ===");
         System.out.print("Insira o email do motorista: ");
@@ -400,6 +451,9 @@ public static boolean menuCadastroMotorista(){
         }
     }
 
+    /**
+     * Conduz o fluxo para que um motorista possa avaliar um passageiro, identificado por ID.
+     */
     public static void menuAvaliaPassageiro() {
         int idPassageiro = 0;
         System.out.println("\n=== Avaliar Passageiro ===");

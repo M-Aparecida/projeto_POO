@@ -5,10 +5,33 @@ import java.util.Scanner;
 
 import DAO.PassageiroDAO;
 
+/**
+ * Representa um Passageiro no sistema, estendendo a classe base Pessoa.
+ * Esta classe armazena informações específicas do passageiro, como dados de pagamento,
+ * e fornece métodos para interagir com o sistema, como listar passageiros e modificar dados.
+ *
+ * @see Pessoa
+ * @see PassageiroDAO
+ */
 public class Passageiro extends Pessoa {
     private int idPassageiro;
     private String cartaoDados;
 
+    /**
+     * Construtor completo para criar um objeto Passageiro a partir de dados do banco de dados.
+     *
+     * @param nome                 O nome do passageiro.
+     * @param cpf                  O CPF do passageiro.
+     * @param email                O email do passageiro.
+     * @param telefone             O telefone do passageiro.
+     * @param senha                A senha de acesso.
+     * @param genero               O gênero do passageiro.
+     * @param idPassageiro         O ID único do passageiro.
+     * @param cartaoDados          Os dados do cartão de pagamento.
+     * @param quantidadeCorridas   O total de corridas concluídas.
+     * @param avaliacaoMedia       A avaliação média do passageiro.
+     * @param idade                A idade do passageiro.
+     */
     public Passageiro(String nome, String cpf, String email, String telefone, String senha, String genero,
             int idPassageiro, String cartaoDados, int quantidadeCorridas, float avaliacaoMedia, int idade) {
         super(nome, cpf, email, telefone, idade, senha, genero);
@@ -18,15 +41,38 @@ public class Passageiro extends Pessoa {
         super.setQuantidadeCorridas(quantidadeCorridas);
     }
 
+    /**
+     * Construtor para criar um novo Passageiro durante o cadastro.
+     * Inicializa os dados de cartão como nulos.
+     *
+     * @param nome     O nome do passageiro.
+     * @param cpf      O CPF do passageiro.
+     * @param email    O email do passageiro.
+     * @param telefone O telefone do passageiro.
+     * @param senha    A senha de acesso.
+     * @param genero   O gênero do passageiro.
+     * @param idade    A idade do passageiro.
+     */
     public Passageiro(String nome, String cpf, String email, String telefone, String senha, String genero, int idade){
         super(nome, cpf, email, telefone,idade, senha, genero);
         cartaoDados = null;
     }
 
+     /**
+     * Construtor padrão (sem argumentos).
+     * Inicializa um objeto Passageiro vazio com dados de cartão nulos.
+     */
     public Passageiro(){
         cartaoDados = null;
     }
 
+    /**
+     * Simula a realização de um pagamento.
+     *
+     * @param valor           O valor a ser pago.
+     * @param metodoPagamento O método de pagamento (ex: "cartão de crédito").
+     * @return true se o valor for válido, false caso contrário.
+     */
     public boolean realizarPagamento(float valor, String metodoPagamento){
         if (valor > 0) {
             System.out.println("Pagamento de R$" + valor + " no " + metodoPagamento + "efetuado.");
@@ -37,6 +83,9 @@ public class Passageiro extends Pessoa {
         }
     }
 
+    /**
+     * Busca todos os passageiros no banco de dados e os exibe em uma tabela no console.
+     */
     public static void listarPassageiros(){
         PassageiroDAO dao = new PassageiroDAO();
         List<Passageiro> passageiros = dao.listarPassageiros();
@@ -55,6 +104,11 @@ public class Passageiro extends Pessoa {
         }
     }
 
+    /**
+     * Cria e cadastra um novo passageiro no sistema.
+     *
+     * @return true se o cadastro for bem-sucedido, false caso contrário.
+     */
     public boolean cadastroPassageiro(String nome, String email, String cpf, String senha, String cartaoDados, int idade, String genero, String telefone){
             Passageiro p = new Passageiro(nome, cpf, email, telefone, senha, genero, idade);
 
@@ -66,6 +120,11 @@ public class Passageiro extends Pessoa {
             }
     }
 
+    /**
+     * Busca os dados completos e atualizados desta instância de passageiro no banco de dados.
+     *
+     * @return Um novo objeto Passageiro com os dados do banco, ou null se o ID da instância atual for 0.
+     */
     public Passageiro getDadosPassageiro() {
         if (this.idPassageiro == 0) {
             System.out.println("Passageiro sem ID definido.");
@@ -76,7 +135,13 @@ public class Passageiro extends Pessoa {
         return dao.buscarPorId(this.idPassageiro);
     }
 
-
+    /**
+     * Modifica um campo específico desta instância de passageiro no banco de dados.
+     *
+     * @param campo      O campo a ser alterado (ex: "nome", "cpf", "email", "telefone").
+     * @param novoValor  O novo valor para o campo.
+     * @return true se a modificação for bem-sucedida, false caso contrário.
+     */
     public boolean modificarValoresPassageiro(String campo, String novoValor) {
     PassageiroDAO dao = new PassageiroDAO();
     switch (campo.toLowerCase()) {
@@ -94,12 +159,23 @@ public class Passageiro extends Pessoa {
         }
     }
 
+    /**
+     * Busca um passageiro no banco de dados pelo seu e-mail.
+     *
+     * @param email O e-mail do passageiro a ser buscado.
+     * @return O objeto Passageiro se encontrado, caso contrário, retorna null.
+     */
     public static Passageiro buscarPassageiro(String email){
         PassageiroDAO dao = new PassageiroDAO();
         Passageiro p = dao.buscarPorEmail(email);
         return p;
     }
 
+    /**
+     * Método interativo para coletar uma avaliação para um passageiro via console e persistí-la no banco.
+     *
+     * @param idPassageiro O ID do passageiro a ser avaliado.
+     */
     public static void avaliarPassageiro(int idPassageiro){
         Scanner ent = new Scanner(System.in);
         float avaliacao = 0;
@@ -124,6 +200,7 @@ public class Passageiro extends Pessoa {
 
     }
 
+    // --- GETTERS ---
     public int getIdPassageiro() {
         return idPassageiro;
     }

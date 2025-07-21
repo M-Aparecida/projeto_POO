@@ -5,9 +5,19 @@ import java.util.Scanner;
 
 import entity.Veiculo;
 
+/**
+ * Classe estática responsável por renderizar todas as telas (menus, prompts, etc.)
+ * relacionadas à gestão de Veículos no console.
+ * Fornece uma interface de usuário para listar, buscar, modificar e deletar veículos.
+ */
 public class VeiculoView {
     static Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Exibe o menu principal de gerenciamento de veículos.
+     * Atua como o controlador principal para todas as operações de veículos,
+     * chamando outros métodos privados com base na escolha do usuário.
+     */
     public static void menuVeiculo() {
         boolean mostrarMenu = true;
 
@@ -56,6 +66,10 @@ public class VeiculoView {
         }
     }
 
+    /**
+     * Busca e exibe uma lista formatada de todos os veículos disponíveis no sistema.
+     * Informa ao usuário se nenhum veículo for encontrado.
+     */
     private static void listarVeiculos() {
         limparTela();
         System.out.println("=== Lista de Veículos Disponíveis ===");
@@ -72,6 +86,9 @@ public class VeiculoView {
         esperar();
     }
 
+    /**
+     * Conduz o fluxo de interface para buscar um veículo por sua placa e exibir seus detalhes.
+     */
     private static void buscarVeiculoPorPlaca() {
         limparTela();
         System.out.print("Informe a placa do veículo: ");
@@ -88,6 +105,10 @@ public class VeiculoView {
         esperar();
     }
 
+    /**
+     * Conduz o fluxo de interface para buscar um veículo por seu modelo e ano, e exibir seus detalhes.
+     * Inclui validação para a entrada do ano.
+     */
     private static void buscarVeiculoPorModeloAno() {
         limparTela();
         System.out.print("Informe o modelo do veículo: ");
@@ -116,6 +137,10 @@ public class VeiculoView {
         esperar();
     }
 
+    /**
+     * Gerencia o processo interativo de modificação dos dados de um veículo.
+     * O usuário informa a placa e, se o veículo for encontrado, insere os novos dados.
+     */
     private static void modificarVeiculo() {
         limparTela();
         System.out.print("Informe a placa do veículo que deseja modificar: ");
@@ -152,6 +177,10 @@ public class VeiculoView {
         esperar();
     }
 
+    /**
+     * Gerencia o processo interativo de exclusão de um veículo.
+     * O usuário informa a placa e o veículo correspondente é deletado.
+     */
     private static void deletarVeiculo() {
         limparTela();
         System.out.print("Informe a placa do veículo que deseja deletar: ");
@@ -173,10 +202,16 @@ public class VeiculoView {
         esperar();
     }
 
+    /**
+     * Limpa a tela do console imprimindo múltiplas linhas novas para melhorar a legibilidade.
+     */
     private static void limparTela() {
         for (int i = 0; i < 50; i++) System.out.println();
     }
 
+    /**
+     * Pausa a execução do programa e aguarda o usuário pressionar a tecla ENTER para continuar.
+     */
     private static void esperar() {
         System.out.println("\nPressione ENTER para continuar...");
         scanner.nextLine();
