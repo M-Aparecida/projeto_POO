@@ -2,6 +2,7 @@ package entity;
 
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import DAO.MotoristaDAO;
@@ -79,7 +80,6 @@ public class Motorista extends Pessoa {
         this.disponivel = disponivel;
     }
     
-
     public static boolean cadastroMotorista( String nome, String cpf, String email, String telefone, String senha, String genero, int idade, long numeroCnh){
         Motorista motorista = new Motorista(nome, cpf, email, telefone, senha, genero, idade, numeroCnh);
 
@@ -116,11 +116,13 @@ public class Motorista extends Pessoa {
         this.disponivel = false;
         return true;
     }
-public static Motorista buscarMotorista(String email){
+    
+    public static Motorista buscarMotorista(String email){
         MotoristaDAO dao = new MotoristaDAO();
         Motorista m = dao.buscarPorEmail(email);
         return m;
     }
+    
     public boolean modificarValoresMotorista(String op, String novaInformacao){
         MotoristaDAO dao = new MotoristaDAO();
         switch (op.toLowerCase()) {
@@ -159,5 +161,17 @@ public static Motorista buscarMotorista(String email){
                 ent.nextLine();
             }
         }while(true);
+    }
+
+    public Map<String, Number> relatorioFaturamento(){
+        MotoristaDAO dao = new MotoristaDAO();
+        Map<String, Number> relatorio = dao.gerarRelatorioFaturamento(this.getIdMotorista());
+        return relatorio;
+    }
+
+    public Map<String, Number> relatorioFaturamento( String dataInicio, String dataFim){
+        MotoristaDAO dao = new MotoristaDAO();
+        Map<String, Number> relatorio = dao.gerarRelatorioFaturamentoPorPeriodo(this.getIdMotorista(), dataInicio, dataFim);;
+        return relatorio;   
     }
 }

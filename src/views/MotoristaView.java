@@ -247,12 +247,11 @@ public static boolean menuCadastroMotorista(){
             System.out.print("Escolha uma opção: ");
 
             String opcao = scanner.nextLine();
-            MotoristaDAO motoristaDAO = new MotoristaDAO();
             Map<String, Number> relatorio = null;
 
             switch (opcao) {
                 case "1":
-                    relatorio = motoristaDAO.gerarRelatorioFaturamento(m.getIdMotorista());
+                    relatorio = m.relatorioFaturamento();
                     limparTela();
                     System.out.println("--- Relatório de Faturamento (Todo o Período) ---");
                     exibirRelatorio(relatorio);
@@ -283,8 +282,7 @@ public static boolean menuCadastroMotorista(){
                         }
                     } while (true);
                     
-                    relatorio = motoristaDAO.gerarRelatorioFaturamentoPorPeriodo(m.getIdMotorista(), dataInicio, dataFim);
-                    
+                    relatorio = m.relatorioFaturamento(dataInicio, dataFim);
                     limparTela();
                     System.out.println("--- Relatório de Faturamento (" + dataInicio + " a " + dataFim + ") ---");
                     exibirRelatorio(relatorio);
