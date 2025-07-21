@@ -147,7 +147,7 @@ public static boolean menuCadastroMotorista(){
                 System.out.println("Idade deve ser um inteiro.");
                 scanner.nextLine();
             }catch(IllegalArgumentException e){
-                System.out.println("Insira uma idade válida 1-120");
+                System.out.println("Insira uma idade válida 18-120");
                 scanner.nextLine();
             }
         }while(true);
