@@ -5,9 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import java.sql.Statement;
+import java.time.LocalDate;
+
 import conexao.Conexao;
 import entity.Motorista;
 public class MotoristaDAO{
@@ -293,8 +296,6 @@ public List<Motorista> listarMotoristas() {
         }
     }
 
-
-
     public boolean alterarDisponibilidade(boolean disponivel, int idMotorista) {
         String sql = "UPDATE motorista SET disponivel = ? WHERE id_motorista = ?";
         try (Connection conn = Conexao.getConnection();
@@ -306,6 +307,69 @@ public List<Motorista> listarMotoristas() {
             System.err.println("Erro ao alterar disponibilidade do motorista: " + e.getMessage());
             return false;
         }
+    }
+
+    public Map<String, Number> gerarRelatorioFaturamento(int idMotorista) {
+        String sql = """
+            SELECT
+                COUNT(CASE WHEN status = 4 THEN 1 END) AS corridas_finalizadas,
+                COUNT(CASE WHEN status = 5 THEN 1 END) AS corridas_canceladas,
+                SUM(CASE WHEN status = 4 THEN preco ELSE 0 END) AS faturamento_total
+            FROM corrida
+            WHERE motorista_id = ?
+        """;
+
+        try (Connection conn = Conexao.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, idMotorista);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Map<String, Number> relatorio = new HashMap<>();
+                relatorio.put("corridasFinalizadas", rs.getInt("corridas_finalizadas"));
+                relatorio.put("corridasCanceladas", rs.getInt("corridas_canceladas"));
+                relatorio.put("faturamentoTotal", rs.getDouble("faturamento_total"));
+                return relatorio;
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao gerar relatório de faturamento: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public Map<String, Number> gerarRelatorioFaturamentoPorPeriodo(int idMotorista, String dataInicio, String dataFim) {
+        String sql = """
+            SELECT
+                COUNT(CASE WHEN status = 4 THEN 1 END) AS corridas_finalizadas,
+                COUNT(CASE WHEN status = 5 THEN 1 END) AS corridas_canceladas,
+                SUM(CASE WHEN status = 4 THEN preco ELSE 0 END) AS faturamento_total
+            FROM corrida
+            WHERE motorista_id = ? AND data_corrida >= ? AND data_corrida < ?
+        """;
+
+        try (Connection conn = Conexao.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            LocalDate fim = LocalDate.parse(dataFim).plusDays(1);
+
+            ps.setInt(1, idMotorista);
+            ps.setString(2, dataInicio);
+            ps.setString(3, fim.toString());
+            
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Map<String, Number> relatorio = new HashMap<>();
+                relatorio.put("corridasFinalizadas", rs.getInt("corridas_finalizadas"));
+                relatorio.put("corridasCanceladas", rs.getInt("corridas_canceladas"));
+                relatorio.put("faturamentoTotal", rs.getDouble("faturamento_total"));
+                return relatorio;
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao gerar relatório de faturamento por período: " + e.getMessage());
+        }
+        return null;
     }
 
 }

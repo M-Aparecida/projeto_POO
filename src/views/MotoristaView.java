@@ -1,6 +1,7 @@
 package views;
 
 import java.util.InputMismatchException;
+import java.util.Map;
 import java.util.Scanner;
 
 import DAO.MotoristaDAO;
@@ -180,48 +181,39 @@ public static boolean menuCadastroMotorista(){
             System.out.println("\n=== Tela Inicial do Motorista ===");
             System.out.println("1. Editar Cadastro");
             System.out.println("2. Listar Motoristas");
-            System.out.println("3. Listar Histórico de Corridas");
-            System.out.println("4. Buscar Motorista por email");
-            System.out.println("5. Área da Corrida");
-            System.out.println("6. Relatório de Faturamento");
-            System.out.println("7. Área de Veículo");
-            System.out.println("8. Avaliar Passageiro");
+            System.out.println("3. Buscar Motorista por email");
+            System.out.println("4. Área da Corrida");
+            System.out.println("5. Relatório de Faturamento");
+            System.out.println("6. Área de Veículo");
             System.out.println("0. Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             String opcao = scanner.nextLine();
 
             switch (opcao) {
                 case "1":
-                menuEditarCadastroMotorista(m);
-                mostrarMenu = true;
+                    menuEditarCadastroMotorista(m);
+                    mostrarMenu = true;
                     break;
                 case "2":
-                Motorista.listarMotoristas();
-                mostrarMenu = true;
+                    Motorista.listarMotoristas();
+                    mostrarMenu = true;
                     break;
                 case "3":
+                    menuBuscarMotorista(m);
+                    mostrarMenu = true;
                     break;
                 case "4":
-                menuBuscarMotorista(m);
-                mostrarMenu = true;
+                    CorridaView.menuAreaCorrida(m);
                     break;
                 case "5":
-                CorridaView.menuAreaCorrida(m);
+                    menuRelatorioFaturamento(m);
+                    mostrarMenu = true;
                     break;
-                 case "6":
-                 menuRelatorioFaturamento();
-                 mostrarMenu = true;
-                    break;
-                case "7": 
-                VeiculoView.menuVeiculo();
-                mostrarMenu = true;
-                    break;
-                case "8":
-                 menuAvaliaPassageiro();
+                case "6":
+                    VeiculoView.menuVeiculo();
                     mostrarMenu = true;
                     break;
                 case "0":
-
                     return;
                 default:
                     System.out.println("Opção inválida!");
@@ -243,27 +235,62 @@ public static boolean menuCadastroMotorista(){
         }
     }
 
-     public static void menuRelatorioFaturamento() {
+    private static void menuRelatorioFaturamento(Motorista m) {
         while (true) {
+            limparTela();
             System.out.println("\n=== Relatório de Faturamento ===");
-            System.out.println("1. Todo o período");
-            System.out.println("2. Período específico");
+            System.out.println("Motorista: " + m.getNome());
+            System.out.println("---------------------------------");
+            System.out.println("1. Relatório de todo o período");
+            System.out.println("2. Relatório por período específico");
             System.out.println("0. Voltar");
             System.out.print("Escolha uma opção: ");
-            String opcao = scanner.nextLine();
 
-            switch(opcao){
+            String opcao = scanner.nextLine();
+            MotoristaDAO motoristaDAO = new MotoristaDAO();
+            Map<String, Number> relatorio = null;
+
+            switch (opcao) {
                 case "1":
-                   
+                    relatorio = motoristaDAO.gerarRelatorioFaturamento(m.getIdMotorista());
+                    limparTela();
+                    System.out.println("--- Relatório de Faturamento (Todo o Período) ---");
+                    exibirRelatorio(relatorio);
+                    esperar(5);
                     break;
                 case "2":
-                   
-                    esperar(2);
+                    limparTela();
+                    System.out.println("--- Relatório por Período Específico ---");
+                    System.out.print("Digite a data de início (AAAA-MM-DD): ");
+                    String dataInicio = scanner.nextLine();
+                    System.out.print("Digite a data de fim (AAAA-MM-DD): ");
+                    String dataFim = scanner.nextLine();
+                    
+                    relatorio = motoristaDAO.gerarRelatorioFaturamentoPorPeriodo(m.getIdMotorista(), dataInicio, dataFim);
+                    
+                    limparTela();
+                    System.out.println("--- Relatório de Faturamento (" + dataInicio + " a " + dataFim + ") ---");
+                    exibirRelatorio(relatorio);
+                    esperar(5);
                     break;
+                case "0":
+                    return;
+                default:
+                    System.out.println("Opção inválida!");
+                    esperar(1);
             }
+        }
+    }
 
-            if (opcao.equals("0")) return;
-            System.out.println("Função de relatório não implementada ainda.");
+    private static void exibirRelatorio(Map<String, Number> relatorio) {
+        if (relatorio != null) {
+            System.out.println("---------------------------------");
+            System.out.printf("Corridas Finalizadas: %d\n", relatorio.get("corridasFinalizadas").intValue());
+            System.out.printf("Corridas Canceladas:  %d\n", relatorio.get("corridasCanceladas").intValue());
+            System.out.printf("Faturamento Total:    R$ %.2f\n", relatorio.get("faturamentoTotal").doubleValue());
+            System.out.println("---------------------------------");
+        } else {
+            System.out.println("Não foi possível gerar o relatório ou não há dados para o período.");
         }
     }
 

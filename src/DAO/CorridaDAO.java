@@ -525,8 +525,6 @@ public class CorridaDAO {
     }
     public List<Corrida> listarCorridasPorMotoristaEPeriodo(int idMotorista, String dataInicio, String dataFim) {
         List<Corrida> corridas = new ArrayList<>();
-        // CORREÇÃO: Adicionada a condição "c.status = 3" para buscar apenas corridas concluídas.
-        // Se o seu status para "concluída" for outro número, basta alterá-lo aqui.
         String sql = """
             SELECT 
                 c.id_corrida, c.origem, c.destino, c.fator_transito, c.preco, c.data_corrida,
@@ -535,7 +533,7 @@ public class CorridaDAO {
             FROM corrida c
             JOIN passageiro p ON c.passageiro_id = p.id_passageiro
             JOIN motorista m ON c.motorista_id = m.id_motorista
-            JOIN veiculo v ON c.veiculo_id = v.id_veiculo
+            LEFT JOIN veiculo v ON c.veiculo_id = v.id_veiculo
             WHERE c.motorista_id = ? AND c.status = 4 AND c.data_corrida >= ? AND c.data_corrida < ?
             ORDER BY c.data_corrida DESC
         """;
