@@ -260,11 +260,28 @@ public static boolean menuCadastroMotorista(){
                     break;
                 case "2":
                     limparTela();
+                    String dataInicio, dataFim;
                     System.out.println("--- Relatório por Período Específico ---");
                     System.out.print("Digite a data de início (AAAA-MM-DD): ");
-                    String dataInicio = scanner.nextLine();
+                    do {
+                        dataInicio = scanner.nextLine();
+                        if (!dataInicio.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                            System.out.print("insira uma data válida (AAAA-MM-DD): ");    
+                            continue;
+                        }else{
+                            break;
+                        }
+                    } while (true);
                     System.out.print("Digite a data de fim (AAAA-MM-DD): ");
-                    String dataFim = scanner.nextLine();
+                    do {
+                        dataFim = scanner.nextLine();
+                        if (!dataFim.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                            System.out.print("insira uma data válida (AAAA-MM-DD): ");    
+                            continue;
+                        }else{
+                            break;
+                        }
+                    } while (true);
                     
                     relatorio = motoristaDAO.gerarRelatorioFaturamentoPorPeriodo(m.getIdMotorista(), dataInicio, dataFim);
                     
@@ -338,7 +355,7 @@ public static boolean menuCadastroMotorista(){
                 System.out.println("\n=== Editar numero da cnh ===");
                 System.out.println("Insira o novo numero da cnh: ");
                 long novoNumeroCnh = scanner.nextLong();
-                scanner.nextLine(); // Limpar o buffer
+                scanner.nextLine();
                if (m.modificarValoresMotorista("numero cnh", String.valueOf(novoNumeroCnh))) { 
                     m.setNumeroCnh(novoNumeroCnh); 
                     System.out.println("Número da CNH alterado com sucesso!");
@@ -390,9 +407,18 @@ public static boolean menuCadastroMotorista(){
     }
 
     public static void menuAvaliaPassageiro() {
+        int idPassageiro = 0;
         System.out.println("\n=== Avaliar Passageiro ===");
         System.out.print("Insira o ID do passageiro: ");
-        int idPassageiro = scanner.nextInt();
+        do {
+            try {
+                idPassageiro = scanner.nextInt();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("O valor deve ser do tipo inteiro: ");
+                continue;
+            }
+        } while (true);
         scanner.nextLine(); 
 
         PassageiroDAO dao = new PassageiroDAO();
