@@ -31,7 +31,7 @@ public class PassageiroView {
                     break;
                 case "2":
                     if (menuCadastroPassageiro()) {
-                        menuInicialPassageiro(p.getDadosPassageiro());
+                        menuLoginPassageiro();
                     }
                     mostrarMenu = true;
                     break;
