@@ -108,10 +108,10 @@ public abstract class Pessoa {
         return idade; }
 
     public void setIdade(int idade) throws IllegalArgumentException {
-        if (idade < 1 || idade > 120) {
+        if (idade < 18 || idade > 120) {
             throw new IllegalArgumentException();
         }
-        this.idade = idade; 
+    this.idade = idade; 
     }
     
     public String getGenero() {
