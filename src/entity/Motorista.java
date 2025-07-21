@@ -93,36 +93,6 @@ public class Motorista extends Pessoa {
         return dao.buscarPorId(this.idMotorista);
     }
     
-    public long getNumeroCnh() {
-        return numeroCnh;   
-    }
-
-    public void setNumeroCnh(long numeroCnh) {
-        String cnhStr = String.valueOf(numeroCnh);
-
-            if (numeroCnh <= 0 || cnhStr.length() != 11) {
-                throw new IllegalArgumentException("O número da CNH deve conter exatamente 11 dígitos e ser positivo.");
-            }
-
-            this.numeroCnh = numeroCnh;    
-    }
-
-    public int getIdMotorista() {
-        return idMotorista;
-    }
-
-    public void setIdMotorista(int idMotorista) {
-        this.idMotorista = idMotorista;
-    }
-
-    public boolean isDisponivel() {
-        return disponivel;
-    }
-
-    public void setDisponivel(boolean disponivel) {
-        this.disponivel = disponivel;
-    }
-    
     /**
      * Método estático de fábrica para criar e cadastrar um novo motorista.
      *
@@ -261,5 +231,36 @@ public class Motorista extends Pessoa {
         MotoristaDAO dao = new MotoristaDAO();
         Map<String, Number> relatorio = dao.gerarRelatorioFaturamentoPorPeriodo(this.getIdMotorista(), dataInicio, dataFim);;
         return relatorio;   
+    }
+
+    // --- GETTERS E SETTERS ---
+    public long getNumeroCnh() {
+        return numeroCnh;   
+    }
+
+    public void setNumeroCnh(long numeroCnh) {
+        String cnhStr = String.valueOf(numeroCnh);
+
+            if (numeroCnh <= 0 || cnhStr.length() != 11) {
+                throw new IllegalArgumentException("O número da CNH deve conter exatamente 11 dígitos e ser positivo.");
+            }
+
+            this.numeroCnh = numeroCnh;    
+    }
+
+    public int getIdMotorista() {
+        return idMotorista;
+    }
+
+    public void setIdMotorista(int idMotorista) {
+        this.idMotorista = idMotorista;
+    }
+
+    public boolean isDisponivel() {
+        return disponivel;
+    }
+
+    public void setDisponivel(boolean disponivel) {
+        this.disponivel = disponivel;
     }
 }

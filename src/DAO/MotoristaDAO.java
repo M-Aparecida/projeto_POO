@@ -26,79 +26,79 @@ public class MotoristaDAO{
      * @param motorista O objeto Motorista contendo todos os dados a serem inseridos.
      * @return true se o cadastro for bem-sucedido, false caso contrário.
      */
-public boolean cadastrarMotorista(Motorista motorista) {
-    String sql = "INSERT INTO motorista(nome, cpf, email, telefone, senha, idade, genero, qtd_corridas_concluidas, avaliacao_media, numero_cnh, disponivel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public boolean cadastrarMotorista(Motorista motorista) {
+        String sql = "INSERT INTO motorista(nome, cpf, email, telefone, senha, idade, genero, qtd_corridas_concluidas, avaliacao_media, numero_cnh, disponivel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    try (Connection conn = Conexao.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-        ps.setString(1, motorista.getNome());
-        ps.setString(2, motorista.getCpf());
-        ps.setString(3, motorista.getEmail());
-        ps.setString(4, motorista.getTelefone());
-        ps.setString(5, motorista.getSenha());
-        ps.setInt(6, motorista.getIdade());
-        ps.setString(7, motorista.getGenero());
-        ps.setInt(8, motorista.getQuantidadeCorridas());
-        ps.setFloat(9, motorista.getAvaliacaoMedia());
-        ps.setLong(10, motorista.getNumeroCnh());
-        ps.setBoolean(11, motorista.isDisponivel());
+            ps.setString(1, motorista.getNome());
+            ps.setString(2, motorista.getCpf());
+            ps.setString(3, motorista.getEmail());
+            ps.setString(4, motorista.getTelefone());
+            ps.setString(5, motorista.getSenha());
+            ps.setInt(6, motorista.getIdade());
+            ps.setString(7, motorista.getGenero());
+            ps.setInt(8, motorista.getQuantidadeCorridas());
+            ps.setFloat(9, motorista.getAvaliacaoMedia());
+            ps.setLong(10, motorista.getNumeroCnh());
+            ps.setBoolean(11, motorista.isDisponivel());
 
-        ps.executeUpdate();
+            ps.executeUpdate();
 
-        try (ResultSet rs = ps.getGeneratedKeys()) {
-            if (rs.next()) {
-                motorista.setIdMotorista(rs.getInt(1));
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    motorista.setIdMotorista(rs.getInt(1));
+                }
             }
+
+            System.out.println("Motorista '" + motorista.getNome() + "' cadastrado com sucesso! ID: " + motorista.getIdMotorista());
+            return true;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao cadastrar motorista: " + e.getMessage());
+            return false;
         }
-
-        System.out.println("Motorista '" + motorista.getNome() + "' cadastrado com sucesso! ID: " + motorista.getIdMotorista());
-        return true;
-
-    } catch (SQLException e) {
-        System.err.println("Erro ao cadastrar motorista: " + e.getMessage());
-        return false;
     }
-}
     
     /**
      * Lista todos os motoristas cadastrados no banco de dados.
      *
      * @return Uma lista de objetos Motorista. Retorna uma lista vazia se não houver nenhum.
      */ 
-public List<Motorista> listarMotoristas() {
-    String sql = "SELECT * FROM motorista ORDER BY id_motorista";
-    List<Motorista> motoristas = new ArrayList<>();
+    public List<Motorista> listarMotoristas() {
+        String sql = "SELECT * FROM motorista ORDER BY id_motorista";
+        List<Motorista> motoristas = new ArrayList<>();
 
-    try (Connection conn = Conexao.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
-        while (rs.next()) {
-            Motorista m = new Motorista(
-                rs.getInt("id_motorista"),
-                rs.getString("nome"), 
-                rs.getString("cpf"), 
-                rs.getString("email"), 
-                rs.getString("telefone"), 
-                rs.getString("senha"), 
-                rs.getString("genero"),      
-                rs.getInt("idade"),
-                rs.getLong("numero_cnh"), 
-                rs.getBoolean("disponivel"), 
-                rs.getInt("qtd_corridas_concluidas"), 
-                rs.getFloat("avaliacao_media") 
-            );
-            motoristas.add(m);
+            while (rs.next()) {
+                Motorista m = new Motorista(
+                    rs.getInt("id_motorista"),
+                    rs.getString("nome"), 
+                    rs.getString("cpf"), 
+                    rs.getString("email"), 
+                    rs.getString("telefone"), 
+                    rs.getString("senha"), 
+                    rs.getString("genero"),      
+                    rs.getInt("idade"),
+                    rs.getLong("numero_cnh"), 
+                    rs.getBoolean("disponivel"), 
+                    rs.getInt("qtd_corridas_concluidas"), 
+                    rs.getFloat("avaliacao_media") 
+                );
+                motoristas.add(m);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar motoristas: " + e.getMessage());
         }
 
-    } catch (SQLException e) {
-        System.out.println("Erro ao buscar motoristas: " + e.getMessage());
+        return motoristas;
     }
-
-    return motoristas;
-}
 
     /**
      * Busca um motorista pelo nome. A busca não diferencia maiúsculas de minúsculas e
@@ -107,7 +107,7 @@ public List<Motorista> listarMotoristas() {
      * @param nome O nome ou parte do nome do motorista a ser buscado.
      * @return Um objeto Motorista se encontrado, caso contrário, retorna null.
      */
-public Motorista buscarMotoristaPorNome(String nome) {
+    public Motorista buscarMotoristaPorNome(String nome) {
         String sql = "SELECT * FROM motorista WHERE nome ILIKE ?";
 
         try (Connection conn = Conexao.getConnection();
@@ -353,7 +353,7 @@ public Motorista buscarMotoristaPorNome(String nome) {
      * @param avaliacao A nota da nova corrida a ser adicionada.
      * @param id_motorista O ID do motorista que será avaliado.
      */
-public void updateAvaliacao(float avaliacao, int id_motorista){
+    public void updateAvaliacao(float avaliacao, int id_motorista){
         String sqlQtdCorridas = "SELECT qtd_corridas_concluidas, avaliacao_media FROM motorista WHERE id_motorista = ?";
         int qtdCorridas = 0;
         float avaliacaoMedia = 0;
@@ -482,7 +482,3 @@ public void updateAvaliacao(float avaliacao, int id_motorista){
     }
 
 }
-
-
-
-

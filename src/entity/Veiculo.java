@@ -48,7 +48,76 @@ public class Veiculo{
 
     }
 
+    /**
+     * Modifica o modelo e a capacidade desta instância de veículo no banco de dados.
+     * Se a operação no banco for bem-sucedida, os atributos do objeto também são atualizados.
+     *
+     * @param novoModelo      O novo modelo a ser atribuído.
+     * @param novaCapacidade  A nova capacidade de passageiros.
+     * @return true se a modificação for bem-sucedida, false caso contrário.
+     */
+    public boolean modificarValoresVeiculo(String novoModelo, int novaCapacidade) {
+        VeiculoDAO dao = new VeiculoDAO();
+        boolean sucesso = dao.modificarValoresVeiculo(this.placa, this.modelo, novoModelo, novaCapacidade);
+        if (sucesso) {
+            this.modelo = novoModelo;
+            this.capacidade = novaCapacidade;
+        }
+        return sucesso;
+    }
 
+    /**
+     * Deleta esta instância de veículo do banco de dados, usando sua placa como identificador.
+     *
+     * @return true se a exclusão for bem-sucedida, false caso contrário.
+     */
+    public boolean deletarVeiculo() {
+        VeiculoDAO dao = new VeiculoDAO();
+        return dao.deletarVeiculo(this.placa);
+    }
+
+    public Veiculo getDadosVeiculo() {
+        return this;
+    }
+
+    /**
+     * Lista todos os veículos disponíveis (que não estão em uso).
+     *
+     * @return Uma lista de objetos Veiculo que não estão marcados como "em uso".
+     */
+    public static List<Veiculo> listarVeiculos() {
+        VeiculoDAO dao = new VeiculoDAO();
+        return dao.listarVeiculos().stream()
+            .filter(v -> !v.isEstaEmUso())
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Busca um veículo disponível pela placa.
+     *
+     * @param placa A placa do veículo a ser buscado.
+     * @return O objeto Veiculo se for encontrado e não estiver em uso, caso contrário, retorna null.
+     */
+    public static Veiculo buscar(String placa) {
+        VeiculoDAO dao = new VeiculoDAO();
+        Veiculo v = dao.buscarPorPlaca(placa);
+        return (v != null && !v.isEstaEmUso()) ? v : null;
+    }
+
+    /**
+     * Busca um veículo disponível pelo modelo e ano.
+     *
+     * @param modelo O modelo do veículo.
+     * @param ano    O ano de fabricação do veículo.
+     * @return O objeto Veiculo se for encontrado e não estiver em uso, caso contrário, retorna null.
+     */
+    public static Veiculo buscar(String modelo, int ano) {
+        VeiculoDAO dao = new VeiculoDAO();
+        Veiculo v = dao.buscarPorModeloEAno(modelo, ano);
+        return (v != null && !v.isEstaEmUso()) ? v : null;
+    }
+
+    // --- GETTERS E SETTERS ---
     public int getIdVeiculo() {
         return idVeiculo;
     }
@@ -126,82 +195,4 @@ public class Veiculo{
     public void setId_motorista(int id_motorista) {
         this.id_motorista = id_motorista;
     }
-
-    
-    /**
-     * Modifica o modelo e a capacidade desta instância de veículo no banco de dados.
-     * Se a operação no banco for bem-sucedida, os atributos do objeto também são atualizados.
-     *
-     * @param novoModelo      O novo modelo a ser atribuído.
-     * @param novaCapacidade  A nova capacidade de passageiros.
-     * @return true se a modificação for bem-sucedida, false caso contrário.
-     */
-    public boolean modificarValoresVeiculo(String novoModelo, int novaCapacidade) {
-        VeiculoDAO dao = new VeiculoDAO();
-        boolean sucesso = dao.modificarValoresVeiculo(this.placa, this.modelo, novoModelo, novaCapacidade);
-        if (sucesso) {
-            this.modelo = novoModelo;
-            this.capacidade = novaCapacidade;
-        }
-        return sucesso;
-    }
-
-    /**
-     * Deleta esta instância de veículo do banco de dados, usando sua placa como identificador.
-     *
-     * @return true se a exclusão for bem-sucedida, false caso contrário.
-     */
-    public boolean deletarVeiculo() {
-        VeiculoDAO dao = new VeiculoDAO();
-        return dao.deletarVeiculo(this.placa);
-    }
-
-    public Veiculo getDadosVeiculo() {
-        return this;
-    }
-
-    /**
-     * Lista todos os veículos disponíveis (que não estão em uso).
-     *
-     * @return Uma lista de objetos Veiculo que não estão marcados como "em uso".
-     */
-    public static List<Veiculo> listarVeiculos() {
-        VeiculoDAO dao = new VeiculoDAO();
-        return dao.listarVeiculos().stream()
-            .filter(v -> !v.isEstaEmUso())
-            .collect(Collectors.toList());
-    }
-
-    /**
-     * Busca um veículo disponível pela placa.
-     *
-     * @param placa A placa do veículo a ser buscado.
-     * @return O objeto Veiculo se for encontrado e não estiver em uso, caso contrário, retorna null.
-     */
-    public static Veiculo buscar(String placa) {
-        VeiculoDAO dao = new VeiculoDAO();
-        Veiculo v = dao.buscarPorPlaca(placa);
-        return (v != null && !v.isEstaEmUso()) ? v : null;
-    }
-
-    /**
-     * Busca um veículo disponível pelo modelo e ano.
-     *
-     * @param modelo O modelo do veículo.
-     * @param ano    O ano de fabricação do veículo.
-     * @return O objeto Veiculo se for encontrado e não estiver em uso, caso contrário, retorna null.
-     */
-    public static Veiculo buscar(String modelo, int ano) {
-        VeiculoDAO dao = new VeiculoDAO();
-        Veiculo v = dao.buscarPorModeloEAno(modelo, ano);
-        return (v != null && !v.isEstaEmUso()) ? v : null;
-    }
-
-
 }
-
-
-
-
-  
-    
