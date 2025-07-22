@@ -39,6 +39,12 @@ Este projeto tem como objetivo simular um sistema de aplicativo de transporte si
 - Áreas distintas para passageiro e motorista após autenticação
 - Validação de ações com base no tipo de usuário logado  
 
+## 🧠 Diagrama de Classes
+
+![Diagrama de classes](assets/Diagrama.png)
+
+
+
 
 
 ## 🛠️ Tecnologias e Ferramentas Utilizadas
